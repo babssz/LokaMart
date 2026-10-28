@@ -1,3 +1,4 @@
+from sqlalchemy.orm import relationship
 from sqlalchemy import (
     CheckConstraint, Column, DateTime, ForeignKey, Integer,
     Numeric, String, Text, UniqueConstraint, Boolean, func,
@@ -55,6 +56,8 @@ class Product(Base):
     stock = Column(Integer, nullable=False)
     image = Column(String(255))
     status = Column(String(20), nullable=False, server_default="aktif")  # aktif / disembunyikan
+    store = relationship("Store")
+    category = relationship("Category")
 
 
 class Cart(Base):
