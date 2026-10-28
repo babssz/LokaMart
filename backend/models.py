@@ -75,6 +75,7 @@ class CartItem(Base):
         UniqueConstraint("cart_id", "product_id", name="uq_cart_items_cart_product"),
         CheckConstraint("quantity > 0", name="ck_cart_items_quantity"),
     )
+    product = relationship("Product")
 
     cart_item_id = Column(Integer, primary_key=True)
     cart_id = Column(Integer, ForeignKey("carts.cart_id"), nullable=False)

@@ -85,3 +85,34 @@ class CategoryOut(BaseModel):
     category_id: int
     category_name: str
     description: str | None
+
+
+class CartItemAdd(BaseModel):
+    product_id: int
+    quantity: int = Field(default=1, ge=1)
+
+
+class CartItemUpdate(BaseModel):
+    quantity: int = Field(ge=1)
+
+
+class CartItemOut(BaseModel):
+    cart_item_id: int
+    product_id: int
+    product_name: str
+    store_id: int
+    store_name: str
+    price: Decimal
+    image: str | None
+    stock: int
+    status: str
+    quantity: int
+    subtotal: Decimal
+
+
+class CartOut(BaseModel):
+    cart_id: int
+    items: list[CartItemOut]
+    total: Decimal
+
+
