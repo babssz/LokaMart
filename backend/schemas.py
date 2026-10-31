@@ -1,7 +1,7 @@
 from typing import Literal
 from decimal import Decimal
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
-
+from datetime import datetime
 
 class RegisterRequest(BaseModel):
     name: str = Field(min_length=1, max_length=100)
@@ -116,3 +116,44 @@ class CartOut(BaseModel):
     total: Decimal
 
 
+class CheckoutRequest(BaseModel):
+    payment_method: Literal["transfer_bank", "e_wallet"]
+
+
+class OrderStatusUpdate(BaseModel):
+    status: Literal["diproses", "dikirim", "selesai", "dibatalkan"]
+
+
+class OrderItemOut(BaseModel):
+    product_id: int
+    product_name: str
+    quantity: int
+    price: Decimal
+    subtotal: Decimal
+
+
+class PaymentOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    payment_method: str
+    payment_status: str
+    payment_date: datetime | None
+
+
+class OrderOut(BaseModel):
+    order_id: int
+    buyer_name: str
+    store_id: int
+    store_name: str
+    order_date: datetime | None
+    total_amount: Decimal
+    status: str
+    items: list[OrderItemOut]
+    payment: PaymentOut | None
+
+
+class OrderListOut(BaseModel):
+    items: list[OrderOut]
+    total: int
+    page: int
+    limit: int
