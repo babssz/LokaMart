@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Literal
 
@@ -221,3 +221,53 @@ class OrderListOut(BaseModel):
     total: int
     page: int
     limit: int
+
+# =========================================================
+# LAPORAN
+# =========================================================
+class DailySales(BaseModel):
+    day: date
+    orders: int
+    revenue: Decimal
+
+
+class TopProduct(BaseModel):
+    product_id: int
+    product_name: str
+    quantity_sold: int
+    revenue: Decimal
+
+
+class SalesReportOut(BaseModel):
+    start_date: date | None
+    end_date: date | None
+    total_orders: int
+    total_revenue: Decimal
+    total_items_sold: int
+    orders_by_status: dict[str, int]
+    daily: list[DailySales]
+    top_products: list[TopProduct]
+
+
+class StoreSales(BaseModel):
+    store_id: int
+    store_name: str
+    orders: int
+    revenue: Decimal
+
+
+class PaymentMethodStat(BaseModel):
+    payment_method: str
+    count: int
+    revenue: Decimal
+
+
+class TransactionReportOut(BaseModel):
+    start_date: date | None
+    end_date: date | None
+    total_orders: int
+    total_revenue: Decimal
+    orders_by_status: dict[str, int]
+    daily: list[DailySales]
+    by_store: list[StoreSales]
+    by_payment_method: list[PaymentMethodStat]

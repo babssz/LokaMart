@@ -4,7 +4,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from database import get_db
-from routers import auth, cart, categories, orders, products, profile, users
+from routers import auth, cart, categories, orders, products, profile, reports, users
 
 app = FastAPI(title="LokaMart API")
 
@@ -23,6 +23,7 @@ app.include_router(cart.router)
 app.include_router(orders.router)
 app.include_router(users.router)
 app.include_router(profile.router)
+app.include_router(reports.router)
 
 
 @app.get("/health")
