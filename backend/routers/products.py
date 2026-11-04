@@ -17,6 +17,11 @@ from schemas import (
 )
 
 router = APIRouter(prefix="/products", tags=["Produk"])
+_ACTIVE_SELLER = Product.store_id.in_(
+    select(Store.store_id)
+    .join(User, User.user_id == Store.user_id)
+    .where(User.is_active.is_(True))
+)
 
 
 def _to_out(product: Product) -> ProductOut:
@@ -73,7 +78,7 @@ def list_products(
     limit: int = Query(12, ge=1, le=50),
     db: Session = Depends(get_db),
 ):
-    conditions = [Product.status == "aktif"]
+    conditions = [Product.status == "aktif", _ACTIVE_SELLER]
     if q:
         conditions.append(Product.product_name.ilike(f"%{q}%"))
     if category_id is not None:
@@ -116,7 +121,11 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
     product = db.scalar(
         select(Product)
         .options(joinedload(Product.store), joinedload(Product.category))
-        .where(Product.product_id == product_id, Product.status == "aktif")
+        .where(
+            Product.product_id == product_id,
+            Product.status == "aktif",
+            _ACTIVE_SELLER,
+        )
     )
     if product is None:
         raise HTTPException(status_code=404, detail="Produk tidak ditemukan")

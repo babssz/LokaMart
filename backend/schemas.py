@@ -1,8 +1,13 @@
-from typing import Literal
-from decimal import Decimal
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from datetime import datetime
+from decimal import Decimal
+from typing import Literal
 
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
+
+
+# =========================================================
+# AUTH & USER
+# =========================================================
 class RegisterRequest(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     email: EmailStr
@@ -35,12 +40,49 @@ class TokenOut(BaseModel):
     token_type: str = "bearer"
     user: UserOut
 
+class UserStatusUpdate(BaseModel):
+    is_active: bool
+
+
+class UserListOut(BaseModel):
+    items: list[UserOut]
+    total: int
+    page: int
+    limit: int
+
+# =========================================================
+# KATEGORI
+# =========================================================
+class CategoryCreate(BaseModel):
+    category_name: str = Field(min_length=1, max_length=100)
+    description: str | None = None
+
+
+class CategoryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    category_id: int
+    category_name: str
+    description: str | None
+
+
+# =========================================================
+# PRODUK
+# =========================================================
 class ProductCreate(BaseModel):
     category_id: int
     product_name: str = Field(min_length=1, max_length=150)
     description: str | None = None
     price: Decimal = Field(gt=0, max_digits=12, decimal_places=2)
     stock: int = Field(ge=0)
+    image: str | None = Field(default=None, max_length=255)
+
+
+class ProductUpdate(BaseModel):
+    category_id: int
+    product_name: str = Field(min_length=1, max_length=150)
+    description: str | None = None
+    price: Decimal = Field(gt=0, max_digits=12, decimal_places=2)
     image: str | None = Field(default=None, max_length=255)
 
 
@@ -74,19 +116,10 @@ class ProductListOut(BaseModel):
     page: int
     limit: int
 
-class CategoryCreate(BaseModel):
-    category_name: str = Field(min_length=1, max_length=100)
-    description: str | None = None
 
-
-class CategoryOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    category_id: int
-    category_name: str
-    description: str | None
-
-
+# =========================================================
+# KERANJANG
+# =========================================================
 class CartItemAdd(BaseModel):
     product_id: int
     quantity: int = Field(default=1, ge=1)
@@ -116,6 +149,9 @@ class CartOut(BaseModel):
     total: Decimal
 
 
+# =========================================================
+# PESANAN & PEMBAYARAN
+# =========================================================
 class CheckoutRequest(BaseModel):
     payment_method: Literal["transfer_bank", "e_wallet"]
 
