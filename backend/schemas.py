@@ -65,6 +65,34 @@ class CategoryOut(BaseModel):
     category_name: str
     description: str | None
 
+# =========================================================
+# PROFIL & TOKO
+# =========================================================
+class ProfileUpdate(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    phone: str | None = Field(default=None, max_length=20)
+    address: str | None = None
+
+
+class PasswordChange(BaseModel):
+    old_password: str
+    new_password: str = Field(min_length=6, max_length=72)
+
+
+class StoreUpdate(BaseModel):
+    store_name: str = Field(min_length=1, max_length=100)
+    description: str | None = None
+    address: str | None = None
+
+
+class StoreOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    store_id: int
+    store_name: str
+    description: str | None
+    address: str | None
+
 
 # =========================================================
 # PRODUK
