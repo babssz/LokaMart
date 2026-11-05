@@ -103,7 +103,6 @@ class ProductCreate(BaseModel):
     description: str | None = None
     price: Decimal = Field(gt=0, max_digits=12, decimal_places=2)
     stock: int = Field(ge=0)
-    image: str | None = Field(default=None, max_length=255)
 
 
 class ProductUpdate(BaseModel):
@@ -111,7 +110,6 @@ class ProductUpdate(BaseModel):
     product_name: str = Field(min_length=1, max_length=150)
     description: str | None = None
     price: Decimal = Field(gt=0, max_digits=12, decimal_places=2)
-    image: str | None = Field(default=None, max_length=255)
 
 
 class StockUpdate(BaseModel):

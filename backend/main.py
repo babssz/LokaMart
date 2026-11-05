@@ -1,5 +1,8 @@
+from pathlib import Path
+
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -24,6 +27,10 @@ app.include_router(orders.router)
 app.include_router(users.router)
 app.include_router(profile.router)
 app.include_router(reports.router)
+
+UPLOAD_ROOT = Path(__file__).resolve().parent / "uploads"
+(UPLOAD_ROOT / "products").mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=UPLOAD_ROOT), name="uploads")
 
 
 @app.get("/health")
