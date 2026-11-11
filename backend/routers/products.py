@@ -1,7 +1,9 @@
+import uuid
 from decimal import Decimal
+from pathlib import Path
 from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session, joinedload
 
@@ -13,10 +15,35 @@ from schemas import (
     ProductListOut,
     ProductOut,
     ProductStatusUpdate,
+    ProductUpdate,
     StockUpdate,
 )
 
 router = APIRouter(prefix="/products", tags=["Produk"])
+_ACTIVE_SELLER = Product.store_id.in_(
+    select(Store.store_id)
+    .join(User, User.user_id == Store.user_id)
+    .where(User.is_active.is_(True))
+)
+
+UPLOAD_DIR = Path(__file__).resolve().parent.parent / "uploads" / "products"
+MAX_IMAGE_SIZE = 2 * 1024 * 1024  # 2 MB
+
+
+def _detect_image_ext(data: bytes) -> str | None:
+    # cek dari isi file, bukan dari nama atau content-type kiriman pengguna
+    if data.startswith(b"\xff\xd8\xff"):
+        return ".jpg"
+    if data.startswith(b"\x89PNG\r\n\x1a\n"):
+        return ".png"
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        return ".webp"
+    return None
+
+
+def _delete_image_file(image_path: str | None) -> None:
+    if image_path and image_path.startswith("/uploads/products/"):
+        (UPLOAD_DIR / Path(image_path).name).unlink(missing_ok=True)
 
 
 def _to_out(product: Product) -> ProductOut:
@@ -73,7 +100,7 @@ def list_products(
     limit: int = Query(12, ge=1, le=50),
     db: Session = Depends(get_db),
 ):
-    conditions = [Product.status == "aktif"]
+    conditions = [Product.status == "aktif", _ACTIVE_SELLER]
     if q:
         conditions.append(Product.product_name.ilike(f"%{q}%"))
     if category_id is not None:
@@ -116,7 +143,11 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
     product = db.scalar(
         select(Product)
         .options(joinedload(Product.store), joinedload(Product.category))
-        .where(Product.product_id == product_id, Product.status == "aktif")
+        .where(
+            Product.product_id == product_id,
+            Product.status == "aktif",
+            _ACTIVE_SELLER,
+        )
     )
     if product is None:
         raise HTTPException(status_code=404, detail="Produk tidak ditemukan")
@@ -173,6 +204,35 @@ def update_stock(
     db.refresh(product)
     return _to_out(product)
 
+@router.post("/{product_id}/image", response_model=ProductOut)
+def upload_product_image(
+    product_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    user: User = Depends(require_role("penjual")),
+):
+    store = _get_own_store(db, user)
+    product = _get_own_product(db, product_id, store)
+
+    data = file.file.read(MAX_IMAGE_SIZE + 1)
+    if len(data) > MAX_IMAGE_SIZE:
+        raise HTTPException(status_code=413, detail="Ukuran gambar maksimal 2 MB")
+    ext = _detect_image_ext(data)
+    if ext is None:
+        raise HTTPException(status_code=400, detail="Format gambar harus JPG, PNG, atau WEBP")
+
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    filename = f"{uuid.uuid4().hex}{ext}"
+    (UPLOAD_DIR / filename).write_bytes(data)
+
+    old_image = product.image
+    product.image = f"/uploads/products/{filename}"
+    db.commit()
+    db.refresh(product)
+
+    _delete_image_file(old_image)  # buang gambar lama supaya folder tidak menumpuk
+    return _to_out(product)
+
 
 @router.delete("/{product_id}", status_code=204)
 def delete_product(
@@ -191,10 +251,12 @@ def delete_product(
             status_code=409,
             detail="Produk sudah pernah dipesan sehingga tidak bisa dihapus. Set stok ke 0 saja.",
         )
-
+    
+    image_path = product.image
     db.execute(delete(CartItem).where(CartItem.product_id == product_id))
     db.delete(product)
     db.commit()
+    _delete_image_file(image_path)
 
 
 # ---------- Admin (moderasi) ----------

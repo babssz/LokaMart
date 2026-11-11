@@ -75,6 +75,7 @@ class CartItem(Base):
         UniqueConstraint("cart_id", "product_id", name="uq_cart_items_cart_product"),
         CheckConstraint("quantity > 0", name="ck_cart_items_quantity"),
     )
+    product = relationship("Product")
 
     cart_item_id = Column(Integer, primary_key=True)
     cart_id = Column(Integer, ForeignKey("carts.cart_id"), nullable=False)
@@ -91,6 +92,10 @@ class Order(Base):
     order_date = Column(DateTime, server_default=func.now())
     total_amount = Column(Numeric(12, 2), nullable=False)
     status = Column(String(30), nullable=False, server_default="menunggu_pembayaran")
+    buyer = relationship("User")
+    store = relationship("Store")
+    items = relationship("OrderItem")
+    payment = relationship("Payment", uselist=False)
 
 
 class OrderItem(Base):
@@ -102,6 +107,7 @@ class OrderItem(Base):
     quantity = Column(Integer, nullable=False)
     price = Column(Numeric(12, 2), nullable=False)
     subtotal = Column(Numeric(12, 2), nullable=False)
+    product = relationship("Product")
 
 
 class Payment(Base):
