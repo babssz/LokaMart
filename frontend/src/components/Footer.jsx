@@ -28,10 +28,6 @@ export default function Footer() {
             <p className="text-xs font-semibold text-neutral-900">Navigasi</p>
             <InlineLinks items={nav} />
           </div>
-          <div>
-            <p className="text-xs font-semibold text-neutral-900">Bantuan</p>
-            <InlineLinks items={help} />
-          </div>
         </div>
 
         <div className="mt-6 flex flex-col gap-2 border-t border-stone-200 pt-4 text-[10px] text-neutral-500 md:flex-row md:items-center md:justify-between">

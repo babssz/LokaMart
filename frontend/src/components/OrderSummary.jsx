@@ -1,6 +1,5 @@
 import { formatRupiah } from "../data/products";
 
-// Kartu ringkasan belanja. Dipakai di keranjang dan nanti di checkout (tombol aksi lewat children).
 export default function OrderSummary({ count, subtotal, shipping = 0, children }) {
   return (
     <aside className="rounded-sm border border-stone-200 bg-white p-5">

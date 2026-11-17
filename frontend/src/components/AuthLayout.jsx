@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import Container from "./Container";
 import Footer from "./Footer";
 
-// Kerangka halaman login/register: header sederhana, kartu di tengah, footer yang sama dengan beranda.
 export default function AuthLayout({ title, subtitle, switchLabel, switchTo, children }) {
   return (
     <div className="flex min-h-screen flex-col bg-white font-sans text-neutral-900">

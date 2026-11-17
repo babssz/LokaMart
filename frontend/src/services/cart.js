@@ -1,21 +1,6 @@
 import api from "./api";
 
-// false = keranjang disimpan di browser (localStorage) per pengguna, supaya alur belanja
-//         bisa dicoba sebelum endpoint keranjang di backend siap.
-// true  = memakai endpoint backend di bawah ini.
 export const SERVER_CART = false;
-
-/*
-  USULAN endpoint backend (belum ada di /docs):
-    GET    /cart               -> { items: [{ cart_item_id, product_id, quantity, note, product: ProductOut }] }
-    POST   /cart/items         { product_id, quantity }
-    PATCH  /cart/items/{id}    { quantity?, note? }
-    DELETE /cart/items/{id}
-  Catatan: kolom `note` belum ada di tabel Cart_Item pada ERD.
-*/
-
-// Bentuk item keranjang di frontend:
-// { key, product_id, variant, quantity, note, product: { product_name, price, image, store_id, store_name, stock, category_name } }
 
 const fail = (userMessage) => Object.assign(new Error(userMessage), { userMessage });
 const maxFor = (p) => (typeof p.stock === "number" ? Math.max(p.stock, 0) : 99);

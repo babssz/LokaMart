@@ -35,14 +35,21 @@ export default function RegisterPage() {
         name: form.name.trim(),
         email: form.email.trim(),
         password: form.password,
-        role: "pembeli", // pendaftaran penjual belum ada di desain Figma
+        role: "pembeli", 
         phone: `+62${digits}`,
         address: null,
         store_name: null,
       });
       navigate("/login", { state: { message: "Akun berhasil dibuat. Silakan masuk." } });
-    } catch (err) {
-      setError(getErrorMessage(err));
+   } catch (err) {
+      const message = getErrorMessage(err);
+
+      if (message.includes("valid email address")) {
+        setError("Format alamat email tidak valid. Pastikan email menggunakan format yang benar.");
+      } else {
+        setError(message);
+      }
+      
     } finally {
       setLoading(false);
     }

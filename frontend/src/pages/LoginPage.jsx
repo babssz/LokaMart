@@ -23,7 +23,6 @@ export default function LoginPage() {
     setError("");
 
     const id = form.identifier.trim();
-    // Desain mengizinkan email atau nomor WhatsApp, tapi backend baru menerima email.
     if (!id.includes("@")) {
       return setError("Saat ini masuk hanya bisa dengan email. Login dengan nomor WhatsApp belum tersedia.");
     }
@@ -32,7 +31,6 @@ export default function LoginPage() {
     try {
       const data = await loginRequest({ email: id, password: form.password });
       login(data, form.remember);
-      // TODO: arahkan ke dashboard sesuai role (penjual/admin) setelah halamannya ada
       navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(getErrorMessage(err));

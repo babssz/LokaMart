@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, LogOut, Store, Package, ChevronDown } from "lucide-react";
+import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
+import { ShoppingCart, User, LogOut, Store, Package, ChevronDown, Search } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import Container from "./Container";
@@ -9,13 +9,35 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const { count } = useCart();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const currentKategori = searchParams.get("kategori");
 
   const handleLogout = () => {
     logout();
     setDropdownOpen(false);
     navigate("/");
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/produk?cari=${encodeURIComponent(searchQuery.trim())}`);
+      setMenuOpen(false);
+    }
+  };
+
+  // Fungsi helper untuk menentukan apakah link kategori sedang aktif
+  const getCategoryClass = (kategoriTarget) => {
+    const isActive = currentKategori === kategoriTarget;
+    return (
+      "text-[11px] font-semibold uppercase tracking-wide transition-colors " +
+      (isActive ? "text-maroon" : "text-neutral-700 hover:text-maroon")
+    );
   };
 
   const navLinkClass = ({ isActive }) =>
@@ -24,27 +46,36 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200 bg-white/95 backdrop-blur-sm">
-      <Container className="flex h-14 items-center justify-between gap-4">
+      {/* Baris Atas: Logo, Search Bar, dan Aksi */}
+      <Container className="flex h-16 items-center justify-between gap-6">
         {/* Logo */}
         <Link
           to="/"
-          className="shrink-0 text-sm font-bold uppercase tracking-widest text-neutral-900"
+          className="shrink-0 flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-neutral-900"
         >
           Lokamart
         </Link>
 
-        {/* Nav tengah — desktop */}
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Navigasi utama">
-          <NavLink to="/" end className={navLinkClass}>
-            Beranda
-          </NavLink>
-          <NavLink to="/produk" className={navLinkClass}>
-            Produk
-          </NavLink>
-        </nav>
-
-        {/* Kanan: aksi */}
-        <div className="flex items-center gap-3">
+        {/* Search Bar di Tengah — Desktop */}
+        <form onSubmit={handleSearchSubmit} className="hidden md:flex relative flex-1 max-w-2xl">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari batik tulis, kopi lokal, kerajinan tangan, camilan khas..."
+            className="w-full rounded-sm border border-stone-200 bg-stone-50 py-2 pl-3 pr-9 text-[12px] text-neutral-800 placeholder-neutral-400 focus:border-maroon focus:bg-white focus:outline-none"
+          />
+          <button
+            type="submit"
+            aria-label="Cari"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-maroon"
+          >
+            <Search className="h-4 w-4" />
+          </button>
+        </form>
+      
+        {/* Kanan: Aksi (Keranjang & Profil) */}
+        <div className="flex items-center gap-4 shrink-0">
           {user ? (
             <>
               {/* Keranjang */}
@@ -61,23 +92,23 @@ export default function Navbar() {
                 )}
               </Link>
 
-              {/* Dropdown profil */}
+              {/* Dropdown Profil */}
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setDropdownOpen((v) => !v)}
                   aria-expanded={dropdownOpen}
                   aria-haspopup="true"
-                  className="flex items-center gap-1.5 rounded-sm border border-stone-200 bg-stone-50 px-2.5 py-1.5 text-[11px] font-semibold text-neutral-800 transition-colors hover:bg-stone-100"
+                  className="flex items-center gap-2 rounded-sm bg-transparent px-2 py-1 text-[11px] font-semibold text-neutral-800 transition-colors hover:bg-stone-50"
                 >
                   {user.photo_url ? (
                     <img
                       src={user.photo_url}
                       alt="Foto profil"
-                      className="h-5 w-5 rounded-full object-cover"
+                      className="h-7 w-7 rounded-full object-cover"
                     />
                   ) : (
-                    <span className="grid h-5 w-5 place-items-center rounded-full bg-maroon-dark text-[9px] font-bold text-white">
+                    <span className="grid h-7 w-7 place-items-center rounded-full bg-maroon-dark text-[10px] font-bold text-white">
                       {(user.name ?? "U")
                         .trim()
                         .split(/\s+/)
@@ -87,13 +118,15 @@ export default function Navbar() {
                         .toUpperCase()}
                     </span>
                   )}
-                  <span className="hidden max-w-[8rem] truncate sm:inline">{user.name}</span>
-                  <ChevronDown className="h-3 w-3 shrink-0" />
+                  <div className="hidden text-left sm:block">
+                    <span className="block text-[10px] text-neutral-400 uppercase leading-none">Halo</span>
+                    <span className="block max-w-[7rem] truncate font-bold text-neutral-800">{user.name}</span>
+                  </div>
+                  <ChevronDown className="h-3 w-3 shrink-0 text-neutral-500" />
                 </button>
 
                 {dropdownOpen && (
                   <>
-                    {/* Overlay transparan untuk tutup dropdown saat klik luar */}
                     <div
                       className="fixed inset-0 z-10"
                       onClick={() => setDropdownOpen(false)}
@@ -156,13 +189,13 @@ export default function Navbar() {
             </>
           )}
 
-          {/* Burger — mobile */}
+          {/* Burger — Mobile */}
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
             aria-expanded={menuOpen}
             aria-label="Menu"
-            className="ml-1 grid h-8 w-8 place-items-center rounded-sm text-neutral-700 hover:bg-stone-100 md:hidden"
+            className="grid h-8 w-8 place-items-center rounded-sm text-neutral-700 hover:bg-stone-100 md:hidden"
           >
             <span className="sr-only">Menu</span>
             <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
@@ -184,60 +217,102 @@ export default function Navbar() {
         </div>
       </Container>
 
-      {/* Menu mobile */}
+      {/* Baris Bawah: Navigasi Kategori (Desktop) */}
+      <div className="hidden border-t border-stone-200 bg-white md:block">
+        <Container className="flex h-11 items-center gap-8">
+          <nav className="flex items-center gap-8" aria-label="Navigasi utama">
+            <NavLink to="/" end className={navLinkClass}>
+              Beranda
+            </NavLink>
+            <Link to="/produk?kategori=fashion" className={getCategoryClass("fashion")}>
+              Fashion
+            </Link>
+            <Link to="/produk?kategori=kuliner" className={getCategoryClass("kuliner")}>
+              Kuliner
+            </Link>
+            <Link to="/produk?kategori=kerajinan" className={getCategoryClass("kerajinan")}>
+              Kerajinan
+            </Link>
+          </nav>
+        </Container>
+      </div>
+
+      {/* Menu Dropdown Mobile */}
       {menuOpen && (
         <div className="border-t border-stone-200 bg-white md:hidden">
-          <Container className="flex flex-col gap-1 py-3">
+          <Container className="flex flex-col gap-2 py-3">
+            {/* Search Bar Mobile */}
+            <form onSubmit={handleSearchSubmit} className="relative mb-2">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari produk lokal..."
+                className="w-full rounded-sm border border-stone-200 bg-stone-50 py-2 pl-3 pr-9 text-[12px] text-neutral-800 placeholder-neutral-400 focus:border-maroon focus:bg-white focus:outline-none"
+              />
+              <button
+                type="submit"
+                aria-label="Cari"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-maroon"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+            </form>
+
             <NavLink
               to="/"
               end
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) =>
                 "rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide " +
-                (isActive ? "bg-blush text-maroon" : "text-neutral-700 hover:bg-stone-50")
+                (isActive ? "bg-stone-100 text-maroon" : "text-neutral-700 hover:bg-stone-50")
               }
             >
               Beranda
             </NavLink>
-            <NavLink
-              to="/produk"
+            <Link
+              to="/produk?kategori=fashion"
               onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                "rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide " +
-                (isActive ? "bg-blush text-maroon" : "text-neutral-700 hover:bg-stone-50")
-              }
+              className={"rounded-sm px-3 py-2 " + (currentKategori === "fashion" ? "bg-stone-100 text-maroon font-semibold" : "text-neutral-700 hover:bg-stone-50 font-semibold text-[11px] uppercase tracking-wide")}
             >
-              Produk
-            </NavLink>
+              Fashion
+            </Link>
+            <Link
+              to="/produk?kategori=kuliner"
+              onClick={() => setMenuOpen(false)}
+              className={"rounded-sm px-3 py-2 " + (currentKategori === "kuliner" ? "bg-stone-100 text-maroon font-semibold" : "text-neutral-700 hover:bg-stone-50 font-semibold text-[11px] uppercase tracking-wide")}
+            >
+              Kuliner
+            </Link>
+            <Link
+              to="/produk?kategori=kerajinan"
+              onClick={() => setMenuOpen(false)}
+              className={"rounded-sm px-3 py-2 " + (currentKategori === "kerajinan" ? "bg-stone-100 text-maroon font-semibold" : "text-neutral-700 hover:bg-stone-50 font-semibold text-[11px] uppercase tracking-wide")}
+            >
+              Kerajinan
+            </Link>
+
             {user && (
               <>
+                <div className="my-1 border-t border-stone-200" />
                 <NavLink
                   to="/keranjang"
                   onClick={() => setMenuOpen(false)}
-                  className={({ isActive }) =>
-                    "rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide " +
-                    (isActive ? "bg-blush text-maroon" : "text-neutral-700 hover:bg-stone-50")
-                  }
+                  className="rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-50"
                 >
                   Keranjang {count > 0 && `(${count})`}
                 </NavLink>
                 <NavLink
                   to="/profil"
                   onClick={() => setMenuOpen(false)}
-                  className={({ isActive }) =>
-                    "rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide " +
-                    (isActive ? "bg-blush text-maroon" : "text-neutral-700 hover:bg-stone-50")
-                  }
+                  className="rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-50"
                 >
                   Profil Saya
                 </NavLink>
                 <NavLink
                   to="/pesanan"
                   onClick={() => setMenuOpen(false)}
-                  className={({ isActive }) =>
-                    "rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide " +
-                    (isActive ? "bg-blush text-maroon" : "text-neutral-700 hover:bg-stone-50")
-                  }
+                  className="rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-50"
                 >
                   Pesanan Saya
                 </NavLink>
@@ -245,10 +320,7 @@ export default function Navbar() {
                   <NavLink
                     to="/toko-saya"
                     onClick={() => setMenuOpen(false)}
-                    className={({ isActive }) =>
-                      "rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide " +
-                      (isActive ? "bg-blush text-maroon" : "text-neutral-700 hover:bg-stone-50")
-                    }
+                    className="rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-50"
                   >
                     Toko Saya
                   </NavLink>
@@ -264,23 +336,18 @@ export default function Navbar() {
             )}
             {!user && (
               <>
+                <div className="my-1 border-t border-stone-200" />
                 <NavLink
                   to="/login"
                   onClick={() => setMenuOpen(false)}
-                  className={({ isActive }) =>
-                    "rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide " +
-                    (isActive ? "bg-blush text-maroon" : "text-neutral-700 hover:bg-stone-50")
-                  }
+                  className="rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-50"
                 >
                   Masuk
                 </NavLink>
                 <NavLink
                   to="/register"
                   onClick={() => setMenuOpen(false)}
-                  className={({ isActive }) =>
-                    "rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide " +
-                    (isActive ? "bg-blush text-maroon" : "text-neutral-700 hover:bg-stone-50")
-                  }
+                  className="rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-50"
                 >
                   Daftar
                 </NavLink>

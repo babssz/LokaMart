@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { formatRupiah } from "../data/products";
 
-// Warna label di kartu mengikuti desain Figma (Halal ID, 100% Organik, Edisi Terbatas, Tanpa Pengawet)
 const badgeTone = (text = "") => {
   const s = text.toLowerCase();
   if (s.includes("organik")) return "bg-emerald-700 text-white";
@@ -12,7 +11,6 @@ const badgeTone = (text = "") => {
   return "bg-maroon text-white";
 };
 
-// accentPrice: harga berwarna marun (dipakai di halaman katalog)
 export default function ProductCard({ product, accentPrice = false }) {
   const image = product.image;
   const badge = product.badge ?? (product.stock === 0 ? "Stok habis" : null);

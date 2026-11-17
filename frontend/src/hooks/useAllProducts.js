@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import { fallbackProducts } from "../data/products";
 
-// Memuat semua produk dari backend halaman demi halaman (GET /products?page=..&limit=..),
-// lalu pencarian, filter, urutan, dan paginasi dilakukan di frontend.
-// Kalau nanti backend mendukung filter di server, cukup ubah file ini.
 async function fetchAll() {
   const all = [];
   const seen = new Set();
@@ -15,7 +12,6 @@ async function fetchAll() {
     try {
       res = await api.get("/products", { params: { page, limit } });
     } catch (err) {
-      // Server menolak limit sebesar itu (422): coba lagi tanpa limit
       if (err.response?.status === 422 && limit) {
         limit = undefined;
         page--;
@@ -30,7 +26,7 @@ async function fetchAll() {
     all.push(...fresh);
 
     const total = res.data.total ?? all.length;
-    if (fresh.length === 0 || all.length >= total) break; // selesai, atau server mengabaikan "page"
+    if (fresh.length === 0 || all.length >= total) break;
   }
 
   return all.filter((p) => p.status !== "disembunyikan");

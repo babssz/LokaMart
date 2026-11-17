@@ -12,7 +12,6 @@ import { fetchSalesReport, reportsErrorMessage } from "../services/seller";
 import { formatRupiah } from "../data/products";
 import { PERIODS, chartTitles, downloadCsv, shortRupiah } from "../utils/seller";
 
-// Tab navigasi toko. Hanya "Laporan Penjualan" yang sudah ada; yang lain halaman berikutnya.
 const TABS = [
   { label: "Laporan Penjualan", to: "/toko-saya" },
   { label: "Kelola Pesanan", to: "/toko-saya/pesanan" },
@@ -26,7 +25,6 @@ export default function SellerDashboardPage() {
   const [state, setState] = useState({ report: null, isSample: false, loading: true, error: "" });
   const [storeName, setStoreName] = useState(user?.name ?? "Toko Saya");
 
-  // Nama toko diambil dari produk milik penjual (UserOut belum memuat nama toko)
   useEffect(() => {
     let cancelled = false;
     api
@@ -36,7 +34,6 @@ export default function SellerDashboardPage() {
         if (!cancelled && list[0]?.store_name) setStoreName(list[0].store_name);
       })
       .catch(() => {
-        /* tetap memakai nama akun */
       });
     return () => {
       cancelled = true;

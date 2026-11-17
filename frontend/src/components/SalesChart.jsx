@@ -1,8 +1,6 @@
 import { shortRupiah } from "../utils/seller";
 
-const BAR_AREA = 160; // tinggi area batang (px)
-
-// Grafik batang berpasangan: omzet periode ini (marun) dan periode sebelumnya (abu-abu)
+const BAR_AREA = 160; 
 export default function SalesChart({ title, subtitle, data, onDownload }) {
   const max = Math.max(1, ...data.flatMap((d) => [d.current, d.previous]));
   const peak = data.reduce((best, d, i) => (d.current > data[best].current ? i : best), 0);

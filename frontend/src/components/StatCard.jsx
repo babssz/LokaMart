@@ -1,4 +1,3 @@
-// Kartu ringkasan angka (omzet, pesanan, produk terjual, rata-rata nilai pesanan)
 export default function StatCard({ label, value, unit, change, vs, icon: Icon }) {
   const stable = change == null || change === 0;
   const tone = stable ? "text-neutral-500" : change > 0 ? "text-emerald-700" : "text-red-700";

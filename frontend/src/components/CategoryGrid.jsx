@@ -21,7 +21,6 @@ export default function CategoryGrid() {
 
   useEffect(() => {
     let cancelled = false;
-    // Cek path sebenarnya di http://127.0.0.1:8000/docs
     api
       .get("/categories")
       .then((res) => {

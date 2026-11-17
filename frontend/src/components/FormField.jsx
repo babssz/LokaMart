@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
-// Kolom isian bergaya Figma. type="password" otomatis dapat tombol mata (lihat/sembunyikan).
 export default function FormField({ label, id, labelClass = "", action, prefix, hint, type = "text", className = "", ...props }) {
   const [show, setShow] = useState(false);
   const isPassword = type === "password";

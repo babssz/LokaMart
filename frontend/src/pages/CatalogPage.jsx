@@ -7,10 +7,52 @@ import Container from "../components/Container";
 import ProductCard from "../components/ProductCard";
 import FilterSidebar from "../components/FilterSidebar";
 import useAllProducts from "../hooks/useAllProducts";
-import { PAGE_SIZE, SORTS, categoryCounts, filterProducts, rupiah, sortProducts } from "../utils/catalog";
+import { PAGE_SIZE, SORTS, categoryCounts, filterProducts, pageNumbers, rupiah, sortProducts } from "../utils/catalog";
 
-// Semua pilihan filter disimpan di URL (?kategori=..&min=..&max=..&stok=ready&cari=..&urut=..&hal=..),
-// jadi tautan bisa dibagikan, tombol kembali berfungsi, dan menu navbar bisa langsung memfilter.
+function Pagination({ page, pages, onChange }) {
+  return (
+    <nav className="mt-6 flex flex-wrap items-center justify-center gap-1" aria-label="Navigasi halaman katalog">
+      <button
+        type="button"
+        disabled={page === 1}
+        onClick={() => onChange(page - 1)}
+        className="rounded-sm border border-stone-300 bg-white px-3 py-2 text-[10px] font-semibold text-neutral-700 disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        Sebelumnya
+      </button>
+      {pageNumbers(page, pages).map((number, index) =>
+        number === "…" ? (
+          <span key={`ellipsis-${index}`} className="px-2 text-xs text-neutral-500">
+            {number}
+          </span>
+        ) : (
+          <button
+            key={number}
+            type="button"
+            aria-current={page === number ? "page" : undefined}
+            onClick={() => onChange(number)}
+            className={`min-w-9 rounded-sm border px-3 py-2 text-[10px] font-semibold ${
+              page === number
+                ? "border-neutral-900 bg-neutral-900 text-white"
+                : "border-stone-300 bg-white text-neutral-700 hover:bg-stone-100"
+            }`}
+          >
+            {number}
+          </button>
+        ),
+      )}
+      <button
+        type="button"
+        disabled={page === pages}
+        onClick={() => onChange(page + 1)}
+        className="rounded-sm border border-stone-300 bg-white px-3 py-2 text-[10px] font-semibold text-neutral-700 disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        Selanjutnya
+      </button>
+    </nav>
+  );
+}
+
 export default function CatalogPage() {
   const [params, setParams] = useSearchParams();
   const { products, loading } = useAllProducts();

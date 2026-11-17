@@ -1,6 +1,4 @@
-// Data contoh, dipakai hanya kalau backend belum merespons.
-// Bentuknya mengikuti ProductOut dan CategoryOut di schemas.py backend.
-// `badge`, `colors`, dan `sizes` hanya contoh untuk melihat tampilan (belum ada di backend).
+
 export const categories = ["Semua", "Fashion", "Kuliner", "Kerajinan"];
 
 export const fallbackProducts = [

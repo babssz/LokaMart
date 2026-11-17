@@ -1,20 +1,9 @@
 import api from "./api";
 
-// false = pesanan dibaca dari browser (localStorage), diisi oleh halaman checkout nanti.
-// true  = memakai endpoint backend di bawah ini.
 export const SERVER_ORDERS = false;
 
-// Selama belum ada pesanan, tampilkan 3 pesanan CONTOH (ditandai jelas di halaman) supaya tampilan bisa dicek.
-// Ubah ke false kalau sudah tidak diperlukan.
 export const SHOW_SAMPLE_WHEN_EMPTY = true;
 
-/*
-  USULAN endpoint backend (belum ada di /docs):
-    GET /orders  -> { items: [{ order_id, order_date, status, total_amount,
-                                items: [{ product_id, product_name, image, store_id, store_name,
-                                          quantity, price, subtotal }] }] }
-  Pesanan hanya milik pengguna yang login. Nilai status perlu disepakati dengan tim backend.
-*/
 
 export function ordersErrorMessage(err) {
   if (!err.response) return "Tidak bisa terhubung ke server. Pastikan backend sudah menyala.";

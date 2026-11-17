@@ -8,7 +8,6 @@ const readUser = () => {
       const u = JSON.parse(store.getItem("user"));
       if (u) return u;
     } catch {
-      /* abaikan data rusak */
     }
   }
   return null;
@@ -23,10 +22,6 @@ const clearAll = () => {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(readUser);
-
-  // data = respons TokenOut dari backend: { access_token, token_type, user }
-  // remember = true  -> tetap login setelah browser ditutup (localStorage)
-  // remember = false -> hanya selama tab/browser terbuka (sessionStorage)
   const login = useCallback((data, remember = true) => {
     clearAll();
     const store = remember ? localStorage : sessionStorage;

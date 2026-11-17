@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 import Container from "../components/Container";
 import FormField from "../components/FormField";
 import { useAuth } from "../context/AuthContext";
-import { fetchMe, updateMe, updatePassword, uploadPhoto, getErrorMessage } from "../services/auth";
+import { fetchMe, updateMe, updatePassword, getErrorMessage } from "../services/auth";
 
 const labelCls = "text-[10px] uppercase tracking-wide";
 const emptyPw = { current: "", next: "", confirm: "" };
@@ -109,10 +109,17 @@ export default function ProfilePage() {
       if (pw.next !== pw.confirm) return setStatus({ type: "error", text: "Konfirmasi kata sandi baru tidak sama." });
     }
 
-    const payload = { name: form.name.trim(), phone: `+62${digits}`, email: form.email.trim() };
-    const dataChanged = payload.name !== user.name || payload.phone !== user.phone || payload.email !== user.email;
+    if (form.email.trim() !== user.email) {
+      return setStatus({ type: "error", text: "Perubahan email belum didukung oleh server." });
+    }
+    if (photo) {
+      return setStatus({ type: "error", text: "Unggah foto profil belum didukung oleh server." });
+    }
 
-    if (!dataChanged && !wantsPassword && !photo) {
+    const payload = { name: form.name.trim(), phone: `+62${digits}`, address: user.address ?? null };
+    const dataChanged = payload.name !== user.name || payload.phone !== user.phone;
+
+    if (!dataChanged && !wantsPassword) {
       return setStatus({ type: "ok", text: "Tidak ada perubahan untuk disimpan." });
     }
 
@@ -122,23 +129,14 @@ export default function ProfilePage() {
       let next = { ...user };
 
       if (dataChanged) {
-        await updateMe(payload);
-        next = { ...next, ...payload };
+        next = await updateMe(payload);
         updateUser(next);
       }
 
       if (wantsPassword) {
         step = "ubah kata sandi";
-        await updatePassword({ current_password: pw.current, new_password: pw.next });
+        await updatePassword({ old_password: pw.current, new_password: pw.next });
         setPw(emptyPw);
-      }
-
-      if (photo) {
-        step = "unggah foto";
-        const res = await uploadPhoto(photo.file);
-        next = { ...next, photo_url: res?.photo_url ?? next.photo_url };
-        updateUser(next);
-        setPhoto(null);
       }
 
       setStatus({ type: "ok", text: "Perubahan berhasil disimpan." });
@@ -214,7 +212,6 @@ export default function ProfilePage() {
               )}
 
               <fieldset disabled={busy} className="min-w-0">
-                {/* Biodata utama */}
                 <div className="space-y-4 border-b border-stone-200 py-6">
                   <SectionTitle icon={UserIcon}>Biodata Utama</SectionTitle>
                   <FormField id="name" name="name" label="Nama Lengkap *" labelClass={labelCls} value={form.name} onChange={onChange} required maxLength={100} autoComplete="name" />
@@ -257,7 +254,6 @@ export default function ProfilePage() {
               </div>
             </form>
 
-            {/* Ajakan membuka toko, hanya untuk pembeli */}
             {user?.role === "pembeli" && (
               <div className="flex items-center justify-between gap-4 rounded-sm bg-blush p-4 sm:px-5">
                 <div className="flex min-w-0 items-center gap-3">

@@ -4,8 +4,6 @@ import { PRICE_PRESETS, matchCat } from "../utils/catalog";
 
 const sectionTitle = "text-[10px] font-semibold uppercase tracking-wide text-neutral-800";
 
-// Pilihan di sini baru berlaku setelah tombol "Terapkan Filter" ditekan.
-// Parent memberi `key` yang berubah saat filter di URL berubah, sehingga isinya ikut tersinkron.
 export default function FilterSidebar({ categories, applied, onApply }) {
   const [sel, setSel] = useState(applied.kategori);
   const [min, setMin] = useState(applied.min);

@@ -50,7 +50,6 @@ export default function OrdersPage() {
   });
   const shown = filtered.slice(0, visible);
 
-  // Beli Lagi: masukkan kembali semua produk pesanan ke keranjang (pakai harga dan stok terbaru)
   const reorder = async (order) => {
     setBusyId(order.order_id);
     setNotice(null);

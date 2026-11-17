@@ -8,7 +8,6 @@ import WhyShop from "../components/WhyShop";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
 
-// Beranda berbeda untuk tamu dan pengguna yang sudah login (dua frame di Figma).
 export default function HomePage() {
   const { user } = useAuth();
 

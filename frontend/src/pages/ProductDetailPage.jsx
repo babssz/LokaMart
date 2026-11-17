@@ -31,9 +31,8 @@ export default function ProductDetailPage() {
   const [size, setSize] = useState(null);
   const [qty, setQty] = useState(1);
   const [busy, setBusy] = useState(false);
-  const [status, setStatus] = useState(null); // { type: "ok" | "error", text, cta }
+  const [status, setStatus] = useState(null); 
 
-  // Muat produk (GET /products/{id}); kalau backend mati, pakai data contoh
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -68,7 +67,6 @@ export default function ProductDetailPage() {
     };
   }, [id]);
 
-  // Rekomendasi: produk sekategori dulu, sisanya dari produk lain
   useEffect(() => {
     if (!product) return;
     let cancelled = false;
@@ -119,7 +117,6 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Data turunan
   const images = product.images?.length ? product.images : [product.image].filter(Boolean);
   const colors = product.colors ?? [];
   const sizes = product.sizes ?? [];
@@ -132,7 +129,6 @@ export default function ProductDetailPage() {
   const original = Number(product.original_price);
   const discount = original > Number(product.price) ? Math.round((1 - Number(product.price) / original) * 100) : 0;
 
-  // Pemeriksaan sebelum membeli: login, stok, dan pilihan varian
   const canBuy = () => {
     if (!user) {
       navigate("/login", { state: { from: location, message: "Masuk dulu untuk mulai berbelanja." } });
@@ -159,7 +155,6 @@ export default function ProductDetailPage() {
     setBusy(true);
     setStatus(null);
     try {
-      // Varian disimpan sebagai teks di keranjang (mode lokal); backend belum punya varian produk
       const variantText = [color?.label, size ? `Ukuran ${size}` : null].filter(Boolean).join(" • ");
       const res = await addItem(product, qty, variantText);
       if (!res.ok) {
@@ -176,7 +171,6 @@ export default function ProductDetailPage() {
     }
   };
 
-  // Beli Sekarang: langsung ke checkout hanya dengan produk ini (keranjang tidak berubah)
   const buyNow = () => {
     if (!canBuy()) return;
     const variantText = [color?.label, size ? `Ukuran ${size}` : null].filter(Boolean).join(" • ");
@@ -257,7 +251,7 @@ export default function ProductDetailPage() {
               <div className="flex min-w-0 items-center gap-3">
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-maroon-dark text-xs font-semibold text-white">{storeInitials}</span>
                 <div className="min-w-0">
-                  <p className="flex items-center gap-1 truncate text-sm font-semibold text-neutral-900">
+                  <p className="flex items-center gap-1 truncate text-sm fon/}t-semibold text-neutral-900">
                     {product.store_name ?? "UMKM Makassar"} <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-maroon" />
                   </p>
                   <p className="text-[11px] text-neutral-500">Pengrajin lokal Makassar</p>
@@ -279,51 +273,6 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* Pilihan warna & ukuran (hanya tampil kalau produk punya varian) */}
-            {colors.length > 0 && (
-              <div className="mt-5">
-                <p className={optionTitle}>Warna{color ? `: ${color.label}` : ""}</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {colors.map((c) => (
-                    <button
-                      key={c.label}
-                      type="button"
-                      onClick={() => setColor(c)}
-                      aria-pressed={color?.label === c.label}
-                      className={
-                        "inline-flex items-center gap-2 rounded-sm border px-3 py-1.5 text-xs " +
-                        (color?.label === c.label ? "border-maroon bg-blush/60 font-semibold text-neutral-900" : "border-stone-300 bg-white text-neutral-700 hover:bg-stone-50")
-                      }
-                    >
-                      <span className="h-3 w-3 rounded-full border border-black/10" style={{ background: c.hex }} />
-                      {c.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {sizes.length > 0 && (
-              <div className="mt-5">
-                <p className={optionTitle}>Ukuran{size ? `: ${size}` : ""}</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {sizes.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setSize(s)}
-                      aria-pressed={size === s}
-                      className={
-                        "grid h-9 min-w-11 place-items-center rounded-sm border px-3 text-xs font-semibold " +
-                        (size === s ? "border-maroon-dark bg-maroon-dark text-white" : "border-stone-300 bg-white text-neutral-700 hover:bg-stone-50")
-                      }
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Jumlah */}
             <div className="mt-5">

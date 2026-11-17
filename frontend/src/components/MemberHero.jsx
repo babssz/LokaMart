@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import Container from "./Container";
 
-// Hero untuk pengguna yang sudah login (frame BERANDA di Figma)
 export default function MemberHero() {
   return (
     <section className="bg-white">

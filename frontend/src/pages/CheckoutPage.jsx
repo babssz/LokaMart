@@ -23,8 +23,7 @@ export default function CheckoutPage() {
   const location = useLocation();
   const { items: cartItems, loaded, remove } = useCart();
 
-  // Dua pintu masuk: "Beli Sekarang" (buyNow, hanya satu produk, tidak lewat keranjang)
-  // atau item yang dicentang di keranjang (keys).
+  
   const buyNow = location.state?.buyNow;
   const keys = location.state?.keys;
 
@@ -330,12 +329,7 @@ export default function CheckoutPage() {
                 </p>
               </div>
 
-              <label className="mt-4 flex cursor-pointer items-start gap-2 text-[11px] leading-relaxed text-neutral-600">
-                <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-maroon-dark" />
-                <span>
-                  Saya menyetujui <strong className="text-neutral-900">Ketentuan Pembelian Produk UMKM</strong>, kode etik pengrajin lokal, dan Garansi Kurasi Orisinalitas Kota.
-                </span>
-              </label>
+            
 
               {error && (
                 <p role="alert" className="mt-3 rounded-sm bg-red-50 px-3 py-2 text-xs text-red-800">

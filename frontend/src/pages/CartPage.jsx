@@ -18,7 +18,6 @@ export default function CartPage() {
   const [unchecked, setUnchecked] = useState(() => new Set()); // item yang tidak dicentang
   const [suggest, setSuggest] = useState([]);
 
-  // Produk untuk bagian "Beli Bersama Karya Terkait"
   useEffect(() => {
     let cancelled = false;
     api
@@ -35,7 +34,6 @@ export default function CartPage() {
     };
   }, []);
 
-  // Kelompokkan per toko
   const groups = useMemo(() => {
     const map = new Map();
     items.forEach((it) => {

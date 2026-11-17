@@ -4,8 +4,6 @@ import * as cartApi from "../services/cart";
 
 const CartContext = createContext(null);
 
-// Semua fungsi mengembalikan { ok, message } supaya halaman bisa menampilkan pesan kalau gagal.
-// `loaded` bernilai true setelah keranjang selesai dimuat pertama kali (dipakai halaman checkout).
 export function CartProvider({ children }) {
   const { user } = useAuth();
   const userId = user?.user_id;
@@ -50,7 +48,7 @@ export function CartProvider({ children }) {
   const value = useMemo(
     () => ({
       items,
-      count: items.length, // jumlah baris produk (sesuai lencana di desain)
+      count: items.length, 
       loading,
       loaded,
       error,

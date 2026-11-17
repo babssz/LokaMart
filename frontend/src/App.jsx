@@ -11,7 +11,6 @@ import ProfilePage from "./pages/ProfilePage";
 import SellerDashboardPage from "./pages/SellerDashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-// BrowserRouter, AuthProvider, dan CartProvider dipasang di main.jsx.
 export default function App() {
   return (
     <Routes>

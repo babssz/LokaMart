@@ -4,7 +4,6 @@ import FormField from "./FormField";
 import CheckoutSection from "./CheckoutSection";
 import { formatPhone, phoneDigits } from "../utils/checkout";
 
-// Alamat pengiriman: tampilan ringkas, dan formulir kecil saat "Ubah Alamat" ditekan.
 export default function AddressCard({ address, onSave }) {
   const empty = !address.address?.trim();
   const [editing, setEditing] = useState(empty);

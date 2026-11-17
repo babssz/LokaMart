@@ -1,4 +1,4 @@
-// Kartu langkah checkout bernomor (1 Alamat, 2 Pengiriman, 3 Item, 4 Pembayaran)
+
 export default function CheckoutSection({ number, title, subtitle, action, children }) {
   return (
     <section className="rounded-sm border border-stone-200 bg-white">

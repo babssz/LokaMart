@@ -1,8 +1,6 @@
 import { MapPin } from "lucide-react";
 import Container from "./Container";
 
-// Banner cerita (editorial) di beranda setelah login.
-// Foto: export dari Figma ke public/images/jejak-lokal.jpg. Teks paragraf: samakan dengan Figma.
 export default function StorySection() {
   return (
     <section className="bg-blush">
