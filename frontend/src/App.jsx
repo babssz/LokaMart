@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import SellerDashboardPage from "./pages/SellerDashboardPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage"; // Pastikan ini mengarah ke file AdminDashboardPage yang baru kita buat
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
@@ -56,6 +57,15 @@ export default function App() {
         element={
           <ProtectedRoute roles={["penjual"]}>
             <SellerDashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      {/* Tambahkan Rute Dashboard Admin di sini */}
+      <Route
+        path="/admin-dashboard"
+        element={
+          <ProtectedRoute roles={["admin"]}>
+            <AdminDashboardPage />
           </ProtectedRoute>
         }
       />

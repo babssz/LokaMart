@@ -31,7 +31,17 @@ export default function LoginPage() {
     try {
       const data = await loginRequest({ email: id, password: form.password });
       login(data, form.remember);
-      navigate(redirectTo, { replace: true });
+
+      // Cek apakah user yang login adalah admin (berdasarkan role dari response API atau email khusus)
+      // Sesuaikan properti role/is_admin dengan struktur data yang dikembalikan oleh FastAPI kamu
+      const userRole = data?.role || data?.user?.role;
+      const userEmail = id.toLowerCase();
+
+      if (userRole === "admin" || userEmail === "admin@lokamart.com") {
+        navigate("/admin-dashboard", { replace: true });
+      } else {
+        navigate(redirectTo, { replace: true });
+      }
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
