@@ -98,7 +98,7 @@ export default function CheckoutPage() {
   const placeOrder = async () => {
     setError("");
     if (!address.address?.trim()) return setError("Lengkapi alamat pengiriman terlebih dahulu.");
-    if (!agree) return setError("Setujui ketentuan pembelian untuk melanjutkan.");
+ 
 
     setPaying(true);
     try {

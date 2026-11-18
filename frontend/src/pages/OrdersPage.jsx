@@ -8,9 +8,11 @@ import OrderCard from "../components/OrderCard";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import api from "../services/api";
-import { fetchOrders, ordersErrorMessage } from "../services/orders";
 
 const PAGE = 10;
+
+// Helper untuk format nomor pesanan jika propertinya berbeda
+const orderNumber = (o) => o.order_number || `ORD-${o.order_id}`;
 
 export default function OrdersPage() {
   const { user } = useAuth();
@@ -25,32 +27,61 @@ export default function OrdersPage() {
   const [busyId, setBusyId] = useState(null);
   const [notice, setNotice] = useState(
     location.state?.message ? { type: "ok", text: location.state.message } : null
-  ); // { type: "ok" | "error", text, cta }
+  );
 
+  // Mengambil riwayat pesanan langsung dari backend FastAPI: GET /orders
   useEffect(() => {
     let cancelled = false;
     setState((s) => ({ ...s, loading: true, error: "" }));
-    fetchOrders(userId)
-      .then(({ orders, isSample }) => {
-        if (!cancelled) setState({ orders, isSample, loading: false, error: "" });
+
+    api.get("/orders")
+      .then((res) => {
+        if (!cancelled) {
+          console.log("Data Pesanan dari Backend:", res.data); // Cek F12 Console browser
+          
+          // Menangani berbagai kemungkinan format respons dari FastAPI
+          let list = [];
+          if (Array.isArray(res.data)) {
+            list = res.data;
+          } else if (res.data?.items && Array.isArray(res.data.items)) {
+            list = res.data.items;
+          } else if (res.data?.data && Array.isArray(res.data.data)) {
+            list = res.data.data;
+          }
+
+          setState({ orders: list, isSample: false, loading: false, error: "" });
+        }
       })
       .catch((err) => {
-        if (!cancelled) setState({ orders: [], isSample: false, loading: false, error: ordersErrorMessage(err) });
+        if (!cancelled) {
+          setState({
+            orders: [],
+            isSample: false,
+            loading: false,
+            error: err.response?.data?.detail || "Gagal memuat riwayat pesanan.",
+          });
+        }
       });
+
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [userId]); 
 
   const q = query.trim().toLowerCase();
   const filtered = state.orders.filter((o) => {
     if (!q) return true;
-    const fields = [orderNumber(o), ...o.items.map((i) => i.product_name), ...o.items.map((i) => i.store_name)];
+    const fields = [
+      orderNumber(o), 
+      ...(o.items ? o.items.map((i) => i.product_name) : []), 
+      ...(o.items ? o.items.map((i) => i.store_name) : [])
+    ];
     return fields.some((f) => String(f ?? "").toLowerCase().includes(q));
   });
   const shown = filtered.slice(0, visible);
 
   const reorder = async (order) => {
+    if (!order.items) return;
     setBusyId(order.order_id);
     setNotice(null);
     let added = 0;
@@ -102,7 +133,7 @@ export default function OrdersPage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-neutral-900">Riwayat Pesanan</h1>
-                <p className="mt-1 text-xs text-neutral-500">Daftar seluruh transaksi anda</p>
+                <p className="mt-1 text-xs text-neutral-500">Daftar seluruh transaksi belanja anda</p>
               </div>
 
               <div className="relative w-full sm:w-72">
@@ -123,12 +154,6 @@ export default function OrdersPage() {
             </div>
 
             <div className="mt-6 border-t border-stone-200" />
-
-            {state.isSample && (
-              <p className="mt-4 rounded-sm bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                Menampilkan <strong>data contoh</strong> karena belum ada pesanan. Pesanan asli akan muncul setelah checkout tersedia.
-              </p>
-            )}
 
             {notice && (
               <p
@@ -159,7 +184,7 @@ export default function OrdersPage() {
             ) : state.orders.length === 0 && !state.error ? (
               <div className="mt-5 rounded-sm bg-white px-6 py-16 text-center">
                 <p className="text-lg font-semibold text-neutral-900">Belum ada pesanan</p>
-                <p className="mt-1 text-sm text-neutral-500">Pesanan yang kamu buat akan muncul di sini.</p>
+                <p className="mt-1 text-sm text-neutral-500">Pesanan yang kamu buat akan muncul di sini setelah checkout.</p>
                 <Link to="/produk" className="mt-6 inline-block rounded-sm bg-maroon-dark px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wide text-white hover:bg-maroon">
                   Mulai belanja
                 </Link>

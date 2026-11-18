@@ -161,13 +161,13 @@ def checkout(
     return [_to_out(o) for o in orders]
 
 
-# ---------- Daftar pesanan ----------
+# ---------- Daftar pesanan pembeli (diakses pembeli / penjual yang belanja) ----------
 @router.get("", response_model=OrderListOut)
 def list_my_orders(
     page: int = Query(1, ge=1),
     limit: int = Query(10, ge=1, le=50),
     db: Session = Depends(get_db),
-    user: User = Depends(require_role("pembeli")),
+    user: User = Depends(get_current_user),
 ):
     return _paginate(db, [Order.user_id == user.user_id], page, limit)
 
@@ -215,10 +215,9 @@ def get_order(
     allowed = order is not None and (
         user.role == "admin"
         or (user.role == "pembeli" and order.user_id == user.user_id)
-        or (user.role == "penjual" and order.store.user_id == user.user_id)
+        or (user.role == "penjual" and (order.user_id == user.user_id or order.store.user_id == user.user_id))
     )
     if not allowed:
-        # 404 (bukan 403) supaya pesanan orang lain tidak ketahuan keberadaannya
         raise HTTPException(status_code=404, detail="Pesanan tidak ditemukan")
     return _to_out(order)
 
