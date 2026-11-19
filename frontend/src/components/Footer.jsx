@@ -5,7 +5,7 @@ const help = ["Pusat Bantuan", "Syarat & Ketentuan", "Kebijakan Privasi"];
 const legal = ["Pedoman Kurasi", "Etika Penjualan", "Privasi & Syarat"];
 
 const InlineLinks = ({ items }) => (
-  <p className="mt-2 flex flex-wrap gap-x-2 gap-y-1 text-[11px] text-neutral-600">
+  <p className="mt-2 flex flex-wrap gap-x-2 gap-y-1 text-xm text-neutral-600">
     {items.map((t, i) => (
       <span key={t}>
         <a href="#" className="hover:text-maroon">{t}</a>
@@ -21,16 +21,16 @@ export default function Footer() {
       <Container className="py-8">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <p className="text-sm font-bold text-neutral-900">LOKAMART</p>
-            <p className="mt-2 text-[11px] text-neutral-600">Belanja lokal, dukung UMKM Makassar</p>
+            <p className="text-xl font-bold text-neutral-900">LOKAMART</p>
+            <p className="mt-2 text-xm text-neutral-600">Belanja lokal, dukung UMKM Makassar</p>
           </div>
           <div>
-            <p className="text-xs font-semibold text-neutral-900">Navigasi</p>
+            <p className="text-xl font-semibold text-neutral-900">Navigasi</p>
             <InlineLinks items={nav} />
           </div>
         </div>
 
-        <div className="mt-6 flex flex-col gap-2 border-t border-stone-200 pt-4 text-[10px] text-neutral-500 md:flex-row md:items-center md:justify-between">
+        <div className="mt-6 flex flex-col gap-2 border-t border-stone-200 pt-4 text-xm text-neutral-500 md:flex-row md:items-center md:justify-between">
           <p>© 2026 Lokamart. Semua Hak Dilindungi.</p>
           <p className="flex flex-wrap gap-x-4 gap-y-1">
             {legal.map((t) => (<a key={t} href="#" className="hover:text-maroon">{t}</a>))}

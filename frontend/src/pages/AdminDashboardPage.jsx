@@ -8,6 +8,7 @@ import SalesChart from "../components/SalesChart";
 import { formatRupiah } from "../data/products";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
+import logo from "../assets/logo.png";
 
 const ADMIN_TABS = [
   { label: "Laporan Penjualan", id: "laporan" },
@@ -346,7 +347,7 @@ export default function AdminDashboardPage() {
       <header className="sticky top-0 z-50 border-b border-stone-200 bg-white">
         <Container className="flex h-16 items-center justify-between">
           <Link to="/admin-dashboard" className="shrink-0 text-sm font-bold uppercase tracking-widest text-neutral-900">
-            Lokamart
+            <img src={logo} alt="Lokamart" className="h-8 w-auto" />
           </Link>
 
           <div className="relative">

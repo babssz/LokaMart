@@ -8,19 +8,19 @@ export default function FormField({ label, id, labelClass = "", action, prefix, 
   return (
     <div className={className}>
       <div className="mb-1.5 flex items-center justify-between gap-2">
-        <label htmlFor={id} className={`text-[11px] font-semibold text-neutral-800 ${labelClass}`}>
+        <label htmlFor={id} className={`text-[16px] font-semibold text-neutral-800 ${labelClass}`}>
           {label}
         </label>
         {action}
       </div>
 
-      <div className="flex items-center rounded-sm bg-stone-100 focus-within:ring-2 focus-within:ring-maroon/30">
-        {prefix && <span className="pl-3 text-xs font-semibold text-neutral-700">{prefix}</span>}
+      <div className="flex items-center rounded-[10px] bg-stone-100 focus-within:ring-2 focus-within:ring-maroon/30">
+        {prefix && <span className="pl-3 text-sm font-semibold text-neutral-700">{prefix}</span>}
         <input
           id={id}
           type={isPassword && show ? "text" : type}
           {...props}
-          className="w-full bg-transparent px-3 py-2.5 text-xs text-neutral-900 placeholder:text-stone-400 focus:outline-none"
+          className="w-full bg-transparent px-3 py-2.5 text-2sm text-neutral-900 placeholder:text-stone-400 focus:outline-none"
         />
         {isPassword && (
           <button
@@ -34,7 +34,7 @@ export default function FormField({ label, id, labelClass = "", action, prefix, 
         )}
       </div>
 
-      {hint && <p className="mt-1 text-[11px] text-neutral-500">{hint}</p>}
+      {hint && <p className="mt-1 text-[14px] text-neutral-500">{hint}</p>}
     </div>
   );
 }

@@ -12,7 +12,34 @@ import { fetchOrders, ordersErrorMessage } from "../services/orders";
 
 const PAGE = 10;
 
+const STATUS_TABS = [
+  { id: "all", label: "Semua" },
+  { id: "diproses", label: "Diproses" },
+  { id: "dikirim", label: "Dikirim" },
+  { id: "selesai", label: "Selesai" },
+  { id: "dibatalkan", label: "Dibatalkan" },
+];
+
 const orderNumber = (o) => o.order_number || `ORD-${o.order_id}`;
+
+function matchesStatusTab(rawStatus, tabId) {
+  if (tabId === "all") return true;
+  const s = String(rawStatus ?? "").trim().toLowerCase();
+
+  if (tabId === "diproses") {
+    return ["diproses", "proses", "dibayar", "menunggu", "menunggu pembayaran", "pending", "dikonfirmasi"].includes(s);
+  }
+  if (tabId === "dikirim") {
+    return ["dikirim", "dalam pengiriman", "shipped", "diantar"].includes(s);
+  }
+  if (tabId === "selesai") {
+    return ["selesai", "diterima", "completed", "done"].includes(s);
+  }
+  if (tabId === "dibatalkan") {
+    return ["dibatalkan", "batal", "cancelled", "canceled", "gagal"].includes(s);
+  }
+  return s === tabId;
+}
 
 export default function OrdersPage() {
   const { user } = useAuth();
@@ -23,6 +50,7 @@ export default function OrdersPage() {
 
   const [state, setState] = useState({ orders: [], isSample: false, loading: true, error: "" });
   const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [visible, setVisible] = useState(PAGE);
   const [busyId, setBusyId] = useState(null);
   const [notice, setNotice] = useState(
@@ -69,15 +97,20 @@ export default function OrdersPage() {
 
   const q = query.trim().toLowerCase();
   const filtered = state.orders.filter((o) => {
+    if (!matchesStatusTab(o.status, statusFilter)) return false;
     if (!q) return true;
     const fields = [
-      orderNumber(o), 
-      ...(o.items ? o.items.map((i) => i.product_name) : []), 
-      ...(o.items ? o.items.map((i) => i.store_name) : [])
+      orderNumber(o),
+      o.status,
+      ...(o.items ? o.items.map((i) => i.product_name) : []),
+      ...(o.items ? o.items.map((i) => i.store_name) : []),
     ];
     return fields.some((f) => String(f ?? "").toLowerCase().includes(q));
   });
   const shown = filtered.slice(0, visible);
+
+  const countForTab = (tabId) =>
+    state.orders.filter((o) => matchesStatusTab(o.status, tabId)).length;
 
   const reorder = async (order) => {
     if (!order.items) return;
@@ -152,7 +185,47 @@ export default function OrdersPage() {
               </div>
             </div>
 
-            <div className="mt-6 border-t border-stone-200" />
+            {/* Bar filter status pesanan */}
+            <div
+              role="tablist"
+              aria-label="Filter status pesanan"
+              className="mt-6 flex gap-1 overflow-x-auto border-b border-stone-200 bg-white px-2 pt-2 rounded-t-sm"
+            >
+              {STATUS_TABS.map((tab) => {
+                const active = statusFilter === tab.id;
+                const count = countForTab(tab.id);
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => {
+                      setStatusFilter(tab.id);
+                      setVisible(PAGE);
+                    }}
+                    className={
+                      "relative flex shrink-0 items-center gap-1.5 border-b-2 px-3.5 py-2.5 text-xs font-semibold transition-colors " +
+                      (active
+                        ? "border-maroon-dark text-maroon-dark"
+                        : "border-transparent text-neutral-500 hover:text-neutral-900")
+                    }
+                  >
+                    <span>{tab.label}</span>
+                    {!state.loading && (
+                      <span
+                        className={
+                          "rounded-sm px-1.5 py-0.5 text-[10px] " +
+                          (active ? "bg-blush text-maroon-dark" : "bg-stone-100 text-neutral-500")
+                        }
+                      >
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
 
             {notice && (
               <p
@@ -188,8 +261,14 @@ export default function OrdersPage() {
                   Mulai belanja
                 </Link>
               </div>
-            ) : filtered.length === 0 && state.orders.length > 0 ? (
-              <p className="mt-8 text-center text-sm text-neutral-500">Tidak ada pesanan yang cocok dengan “{query}”.</p>
+            ) : filtered.length === 0 ? (
+              <div className="mt-5 rounded-sm bg-white px-6 py-12 text-center">
+                <p className="text-sm font-medium text-neutral-600">
+                  {q
+                    ? `Tidak ada pesanan yang cocok dengan “${query}” pada filter ini.`
+                    : `Belum ada pesanan dengan status ${STATUS_TABS.find((t) => t.id === statusFilter)?.label.toLowerCase() ?? "tersebut"}.`}
+                </p>
+              </div>
             ) : (
               <div className="mt-5 space-y-4">
                 {shown.map((o) => (

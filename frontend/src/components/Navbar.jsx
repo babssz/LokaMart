@@ -4,6 +4,7 @@ import { ShoppingCart, User, LogOut, Store, Package, ChevronDown, Search } from 
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import Container from "./Container";
+import logo from "../assets/logo.png";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -52,7 +53,7 @@ export default function Navbar() {
           to="/"
           className="shrink-0 flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-neutral-900"
         >
-          Lokamart
+          <img src={logo} alt="Lokamart" className="h-8 w-auto" />
         </Link>
 
         {/* Search Bar di Tengah — Desktop */}

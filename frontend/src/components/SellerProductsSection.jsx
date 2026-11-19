@@ -170,7 +170,7 @@ export default function SellerProductsSection() {
                       <div className="flex items-center gap-3">
                         <div className="relative group h-12 w-12 shrink-0">
                           {p.image ? (
-                            <img src={p.image} alt="" className="h-12 w-12 rounded-sm object-cover border" />
+                            <img src={p.image} alt="" className="h-12 w-12 rounded-sm object-cover border border-stone-200" />
                           ) : (
                             <div className="grid h-12 w-12 place-items-center rounded-sm bg-stone-100 text-[9px] text-neutral-400 border">
                               Foto

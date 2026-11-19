@@ -77,7 +77,7 @@ export default function OrderCard({ order, reordering, onReorder, onUnavailable 
           <p className="text-sm font-bold text-neutral-900">{formatRupiah(order.total_amount)}</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        {/* <div className="flex flex-wrap items-center gap-2">
           {!status.final && (
             <>
               <Link to={`/pesanan/${order.order_id}`} className={outlineBtn}>
@@ -98,7 +98,7 @@ export default function OrderCard({ order, reordering, onReorder, onUnavailable 
               {reordering ? "Memproses..." : "Beli Lagi"}
             </button>
           )}
-        </div>
+        </div> */}
       </footer>
     </article>
   );

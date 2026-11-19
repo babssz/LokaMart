@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { User, LogOut, Store, Package, ChevronDown, ArrowLeft } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import Container from "./Container";
+import logo from "../assets/logo.png";
 
 export default function SellerNavbar() {
   const { user, logout } = useAuth();
@@ -24,7 +25,7 @@ export default function SellerNavbar() {
             to="/toko-saya"
             className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-neutral-900"
           >
-            Lokamart
+            <img src={logo} alt="Lokamart" className="h-8 w-auto" />
           </Link>
         </div>
 

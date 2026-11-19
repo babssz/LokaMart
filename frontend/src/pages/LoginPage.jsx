@@ -60,7 +60,7 @@ export default function LoginPage() {
         <FormField
           id="identifier"
           name="identifier"
-          label="EMAIL ATAU NOMOR WHATSAPP/HP"
+          label="Email atau Nomor Whatsapp/Hp"
           labelClass="text-[10px] tracking-wide"
           placeholder="contoh: nama@email.com atau 08122456789"
           value={form.identifier}
@@ -73,10 +73,10 @@ export default function LoginPage() {
           id="password"
           name="password"
           type="password"
-          label="KATA SANDI"
+          label="Kata Sandi"
           labelClass="text-[10px] tracking-wide"
           action={
-            <a href="#" onClick={(e) => e.preventDefault()} className="text-[10px] font-semibold text-maroon-dark hover:underline">
+            <a href="#" onClick={(e) => e.preventDefault()} className="text-[14px] font-semibold text-maroon-dark hover:underline">
               Lupa Kata Sandi?
             </a>
           }
@@ -87,7 +87,7 @@ export default function LoginPage() {
           autoComplete="current-password"
         />
 
-        <label className="flex items-center gap-2 text-xs text-neutral-700">
+        <label className="flex items-center gap-2 text-2sm text-neutral-700">
           <input
             type="checkbox"
             checked={form.remember}
@@ -100,12 +100,12 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-sm bg-maroon-dark py-3 text-xs font-semibold uppercase tracking-wide text-white transition-colors hover:bg-maroon disabled:opacity-60"
+          className="w-full rounded-[10px] bg-maroon-dark py-3 text-xs font-semibold uppercase tracking-wide text-white transition-colors hover:bg-maroon disabled:opacity-60"
         >
           {loading ? "Memproses..." : "Masuk"}
         </button>
 
-        <p className="border-t border-stone-200 pt-4 text-center text-[11px] text-neutral-600">
+        <p className="border-t border-stone-200 pt-4 text-center text-[16px] text-neutral-600">
           Belum memiliki akun?{" "}
           <Link to="/register" className="font-semibold text-maroon-dark hover:underline">
             Daftar
