@@ -131,7 +131,7 @@ export default function Navbar() {
                       className="fixed inset-0 z-10"
                       onClick={() => setDropdownOpen(false)}
                     />
-                    <div className="absolute right-0 z-20 mt-1.5 w-44 overflow-hidden rounded-sm border border-stone-200 bg-white shadow-md">
+                    <div className="absolute right-0 z-20 mt-1.5 w-44 overflow-hidden rounded-[10px] border border-stone-200 bg-white shadow-md">
                       <Link
                         to="/profil"
                         onClick={() => setDropdownOpen(false)}
