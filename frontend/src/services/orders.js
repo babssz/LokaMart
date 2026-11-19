@@ -1,122 +1,68 @@
 import api from "./api";
 
-export const SERVER_ORDERS = false;
-
-export const SHOW_SAMPLE_WHEN_EMPTY = true;
-
+const PAGE_SIZE = 50;
 
 export function ordersErrorMessage(err) {
   if (!err.response) return "Tidak bisa terhubung ke server. Pastikan backend sudah menyala.";
-  const code = err.response.status;
-  if (code === 404 || code === 405) return "Fitur riwayat pesanan belum tersedia di server. Hubungi tim backend.";
   const detail = err.response.data?.detail;
   if (typeof detail === "string") return detail;
+  if (Array.isArray(detail)) return detail.map((item) => item.msg).join(", ");
   return "Riwayat pesanan belum bisa dimuat. Coba lagi.";
 }
 
-/* ---------- Mode lokal ---------- */
-
-const storageKey = (userId) => `lokamart_orders_${userId}`;
-const readLocal = (userId) => {
-  try {
-    return JSON.parse(localStorage.getItem(storageKey(userId))) ?? [];
-  } catch {
-    return [];
-  }
-};
-
-// Dipakai halaman checkout (nanti) untuk menyimpan pesanan baru di mode lokal
-export function saveLocalOrder(userId, order) {
-  const list = readLocal(userId);
-  list.unshift(order);
-  localStorage.setItem(storageKey(userId), JSON.stringify(list));
-  return order;
-}
-
-/* ---------- Data contoh (mengikuti desain Figma) ---------- */
-
-const SAMPLE_ORDERS = [
-  {
-    order_id: 1,
-    order_date: "2025-05-15T10:00:00",
-    status: "dikirim",
-    total_amount: 555000,
-    items: [
-      { product_id: 900001, product_name: "Kemeja Batik Cap Pewarna Alami Motif Daun Parang", image: null, store_name: "Sanggar Batik Puspita", variant: "Terakota Mahoni • L", quantity: 1, price: 385000 },
-      { product_id: 900002, product_name: "Biji Kopi Arabika Spesialti Sengrai Lokal 200g", image: null, store_name: "Roastery Kopi Kota", variant: "Medium Roast (Giling Halus)", quantity: 1, price: 170000 },
-    ],
-  },
-  {
-    order_id: 2,
-    order_date: "2025-04-29T09:30:00",
-    status: "selesai",
-    total_amount: 76000,
-    items: [
-      { product_id: 900003, product_name: "Sambal Ikan Asap Tradisional Botol 200g", image: null, store_name: "Dapur Mama Velin", variant: "Pedas Sedang", quantity: 2, price: 38000 },
-    ],
-  },
-  {
-    order_id: 3,
-    order_date: "2025-04-12T14:15:00",
-    status: "selesai",
-    total_amount: 110000,
-    items: [
-      { product_id: 900004, product_name: "Cangkir Keramik Stoneware Buatan Tangan 320ml", image: null, store_name: "Keramik Studio Genteng", variant: "Abu Granit Terakota", quantity: 1, price: 110000 },
-    ],
-  },
-];
-
-/* ---------- Mode server ---------- */
-
-const normalize = (o) => ({
-  order_id: o.order_id,
-  order_date: o.order_date,
-  status: o.status,
-  total_amount: o.total_amount,
-  items: (o.items ?? o.order_items ?? []).map((it) => ({
-    product_id: it.product_id,
-    product_name: it.product_name ?? it.product?.product_name,
-    image: it.image ?? it.product?.image ?? null,
-    store_id: it.store_id ?? it.product?.store_id,
-    store_name: it.store_name ?? it.product?.store_name,
-    variant: it.variant ?? "",
-    quantity: it.quantity,
-    price: it.price,
-    subtotal: it.subtotal,
+const normalize = (order) => ({
+  order_id: order.order_id,
+  order_date: order.order_date,
+  status: order.status,
+  total_amount: order.total_amount,
+  items: (order.items ?? order.order_items ?? []).map((item) => ({
+    product_id: item.product_id,
+    product_name: item.product_name ?? item.product?.product_name,
+    image: item.image ?? item.product?.image ?? null,
+    store_id: item.store_id ?? order.store_id ?? item.product?.store_id,
+    store_name: item.store_name ?? order.store_name ?? item.product?.store_name,
+    variant: item.variant ?? "",
+    quantity: item.quantity,
+    price: item.price,
+    subtotal: item.subtotal,
   })),
 });
 
 const byNewest = (a, b) => new Date(b.order_date) - new Date(a.order_date);
 
-// Mengembalikan { orders, isSample }
-export async function fetchOrders(userId) {
-  const list = SERVER_ORDERS
-    ? await api.get("/orders").then((r) => (Array.isArray(r.data) ? r.data : r.data.items ?? []).map(normalize))
-    : readLocal(userId);
+export async function fetchOrders() {
+  const orders = [];
+  let page = 1;
+  let hasMore = true;
 
-  if (list.length === 0 && SHOW_SAMPLE_WHEN_EMPTY) return { orders: SAMPLE_ORDERS, isSample: true };
-  return { orders: [...list].sort(byNewest), isSample: false };
-}
-
-// Membuat pesanan baru dari halaman checkout.
-// payload = { items, address, shipping, payment, subtotal, total }
-// Mode server memakai usulan: POST /orders { items:[{product_id, quantity}], payment_method, shipping_method, shipping_address }
-export async function createOrder(userId, payload) {
-  if (SERVER_ORDERS) {
-    const res = await api.post("/orders", {
-      items: payload.items.map((i) => ({ product_id: i.product_id, quantity: i.quantity })),
-      payment_method: payload.payment.method,
-      shipping_method: payload.shipping.courier,
-      shipping_address: payload.address,
+  while (hasMore) {
+    const response = await api.get("/orders", {
+      params: { page, limit: PAGE_SIZE },
     });
-    return res.data;
+    if (Array.isArray(response.data)) {
+      orders.push(...response.data.map(normalize));
+      break;
+    }
+
+    const items = Array.isArray(response.data?.items) ? response.data.items : [];
+    if (items.length === 0) break;
+    orders.push(...items.map(normalize));
+    const total = Number(response.data?.total);
+    hasMore = Number.isFinite(total) ? orders.length < total : items.length === PAGE_SIZE;
+    page += 1;
   }
 
-  return saveLocalOrder(userId, {
-    order_id: Date.now(),
-    order_date: new Date().toISOString(),
-    status: "diproses",
-    total_amount: payload.total,
-    ...payload,
+  return { orders: orders.sort(byNewest), isSample: false };
+}
+
+export async function createOrder(payload) {
+  const response = await api.post("/orders/checkout", {
+    items: payload.items.map((item) => ({
+      product_id: item.product_id,
+      quantity: item.quantity,
+      variant: item.variant || null,
+    })),
+    payment_method: payload.payment.method,
   });
+  return Array.isArray(response.data) ? response.data.map(normalize) : [normalize(response.data)];
 }

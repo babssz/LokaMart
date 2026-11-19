@@ -21,7 +21,6 @@ export default function ProductSection({
   const [params, setParams] = useSearchParams();
   const sectionRef = useRef(null);
 
-  // State untuk pagination (halaman saat ini)
   const [currentPage, setCurrentPage] = useState(1);
 
   const keyword = (params.get("q") ?? "").trim();
@@ -45,7 +44,6 @@ export default function ProductSection({
     };
   }, []);
 
-  // Sinkronkan tab aktif jika user klik kategori dari Navbar
   useEffect(() => {
     if (selectedKategori) {
       const formatted = selectedKategori.charAt(0).toUpperCase() + selectedKategori.slice(1);
@@ -67,11 +65,9 @@ export default function ProductSection({
     return cocokKategori && cocokKata;
   });
 
-  // Logika Pagination (Membagi produk per halaman)
   const itemsPerPage = limit;
   const totalPages = Math.ceil(shown.length / itemsPerPage);
   
-  // Ambil data produk untuk halaman aktif saja
   const startIndex = (currentPage - 1) * itemsPerPage;
   const visible = shown.slice(startIndex, startIndex + itemsPerPage);
 

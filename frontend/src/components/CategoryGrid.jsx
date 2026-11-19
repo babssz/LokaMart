@@ -5,7 +5,6 @@ import Container from "./Container";
 import api from "../services/api";
 import { fallbackCategories } from "../data/products";
 
-// Ikon dipilih dari kata di nama kategori; kategori baru dari admin otomatis dapat ikon umum.
 const iconRules = [
   [/fashion|pakaian|busana|kain/, Shirt],
   [/kopi|coffee/, Coffee],

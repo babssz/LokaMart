@@ -1,4 +1,3 @@
-// Fungsi bantu untuk halaman katalog: pencocokan kategori, filter, urutan, dan nomor halaman.
 
 export const PAGE_SIZE = 8;
 
@@ -18,8 +17,6 @@ export const SORTS = [
 
 export const rupiah = (n) => "Rp " + Number(n).toLocaleString("id-ID");
 
-// Menu navbar (Fashion/Kuliner/Kerajinan) memakai kata umum, sedangkan nama kategori di database
-// bisa lebih panjang (misalnya "Makanan & Minuman"). Alias ini menjembatani keduanya.
 const ALIASES = {
   fashion: ["fashion", "batik", "busana"],
   kuliner: ["kuliner", "makanan", "minuman"],
@@ -59,9 +56,12 @@ export function sortProducts(list, urut) {
   return arr;
 }
 
-// Daftar kategori beserta jumlah produknya, dibuat dari data yang dimuat
-export function categoryCounts(products) {
+export function categoryCounts(products, categories = []) {
   const map = new Map();
+  categories.forEach((category) => {
+    const name = typeof category === "string" ? category : category.category_name;
+    if (name && !map.has(name)) map.set(name, 0);
+  });
   products.forEach((p) => {
     if (!p.category_name) return;
     map.set(p.category_name, (map.get(p.category_name) ?? 0) + 1);
@@ -69,7 +69,6 @@ export function categoryCounts(products) {
   return [...map.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
 }
 
-// Contoh hasil: [1, 2, 3, 4, "…", 12]
 export function pageNumbers(current, total) {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
   const set = new Set([1, total, current - 1, current, current + 1]);

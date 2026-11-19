@@ -9,11 +9,9 @@ export default function SellerProductsSection() {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  // State untuk Modal Form (Tambah / Edit Produk)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   
-  // Form State
   const [formData, setFormData] = useState({
     product_name: "",
     category_id: 1, // Sesuaikan kategori default atau ambil dari master kategori
@@ -22,7 +20,6 @@ export default function SellerProductsSection() {
     description: "",
   });
 
-  // Ambil daftar produk toko dari endpoint: GET /products/mine
   const fetchMyProducts = async () => {
     try {
       setLoading(true);
@@ -41,14 +38,12 @@ export default function SellerProductsSection() {
     fetchMyProducts();
   }, []);
 
-  // Handler Buka Modal Tambah
   const handleOpenAddModal = () => {
     setEditingProduct(null);
     setFormData({ product_name: "", category_id: 1, price: "", stock: "", description: "" });
     setIsModalOpen(true);
   };
 
-  // Handler Buka Modal Edit
   const handleOpenEditModal = (product) => {
     setEditingProduct(product);
     setFormData({
@@ -61,7 +56,6 @@ export default function SellerProductsSection() {
     setIsModalOpen(true);
   };
 
-  // Submit Form (Tambah atau Update Produk)
   const handleSubmitForm = async (e) => {
     e.preventDefault();
     try {
@@ -74,11 +68,9 @@ export default function SellerProductsSection() {
       };
 
       if (editingProduct) {
-        // Update produk: PUT /products/{id}
         await api.put(`/products/${editingProduct.product_id}`, payload);
         setSuccessMsg("Produk berhasil diperbarui!");
       } else {
-        // Tambah produk: POST /products
         await api.post("/products", payload);
         setSuccessMsg("Produk baru berhasil ditambahkan!");
       }
@@ -91,7 +83,6 @@ export default function SellerProductsSection() {
     }
   };
 
-  // Handler Hapus Produk: DELETE /products/{id}
   const handleDeleteProduct = async (productId) => {
     if (!window.confirm("Apakah kamu yakin ingin menghapus produk ini?")) return;
     try {
@@ -105,7 +96,6 @@ export default function SellerProductsSection() {
     }
   };
 
-  // Handler Upload Gambar Produk: POST /products/{id}/image
   const handleImageUpload = async (productId, e) => {
     const file = e.target.files[0];
     if (!file) return;

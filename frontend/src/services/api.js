@@ -11,7 +11,7 @@ function resolveAssetUrls(value) {
 
   return Object.fromEntries(
     Object.entries(value).map(([key, item]) => {
-      if (key === "image" && typeof item === "string") {
+      if (["image", "photo_url"].includes(key) && typeof item === "string") {
         const baseUrl = new URL(api.defaults.baseURL, window.location.origin);
         const assetUrl =
           baseUrl.origin === window.location.origin && baseUrl.pathname.replace(/\/$/, "") === "/api"
@@ -24,7 +24,6 @@ function resolveAssetUrls(value) {
   );
 }
 
-// Token disimpan di localStorage (ingat saya) atau sessionStorage (sesi saja)
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token") ?? sessionStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;

@@ -61,7 +61,6 @@ export default function CheckoutPage() {
   const [placed, setPlaced] = useState(false);
   const [error, setError] = useState("");
 
-  // Kalau tidak ada item yang bisa dicheckout, kembali ke keranjang
   useEffect(() => {
     if (buyNow || !loaded || placed) return;
     if (items.length === 0) navigate("/keranjang", { replace: true });
@@ -86,7 +85,6 @@ export default function CheckoutPage() {
 
   const chooseCourier = (id) => {
     setCourierId(id);
-    // COD hanya untuk kurir motor
     if (id !== "motor" && payment.onlyCourier) setPaymentId("qris");
   };
 
@@ -102,7 +100,6 @@ export default function CheckoutPage() {
 
     setPaying(true);
     try {
-      // 1. Cek stok dan harga terbaru dari server (BR-05, NFR07)
       const lines = [];
       for (const it of items) {
         let p = it.product;
@@ -110,7 +107,6 @@ export default function CheckoutPage() {
           p = (await api.get(`/products/${it.product_id}`)).data;
         } catch (err) {
           if (err.response?.status === 404) throw fail(`"${it.product.product_name}" sudah tidak tersedia.`);
-          // server tidak terjangkau: pakai data yang tersimpan
         }
         if (p.status === "disembunyikan") throw fail(`"${p.product_name}" sudah tidak tersedia.`);
         if (typeof p.stock === "number" && it.quantity > p.stock) {
@@ -132,11 +128,9 @@ export default function CheckoutPage() {
       }
       const sub = lines.reduce((s, l) => s + l.subtotal, 0);
 
-      // 2. Pembayaran simulasi (BR-06): tidak ada transaksi uang nyata
       await new Promise((r) => setTimeout(r, 1200));
 
-      // 3. Buat pesanan
-      await createOrder(user.user_id, {
+      await createOrder({
         items: lines,
         address,
         shipping: { courier: courier.name, fee: courier.fee },
@@ -150,14 +144,19 @@ export default function CheckoutPage() {
         total: sub + courier.fee,
       });
 
-      // 4. Bersihkan item yang sudah dipesan dari keranjang
       setPlaced(true);
       if (!buyNow) await remove(items);
 
       const how = payment.id === "cod" ? "dibayar tunai saat barang tiba" : "berhasil dibayar";
       navigate("/pesanan", { replace: true, state: { message: `Pesanan berhasil dibuat dan ${how} (simulasi, ${payment.name}).` } });
     } catch (err) {
-      setError(err.userMessage ?? (err.response ? "Pesanan belum bisa dibuat. Coba lagi." : err.message));
+      const detail = err.response?.data?.detail;
+      const serverMessage = typeof detail === "string"
+        ? detail
+        : Array.isArray(detail)
+          ? detail.map((item) => item.msg).join(", ")
+          : null;
+      setError(err.userMessage ?? serverMessage ?? (err.response ? "Pesanan belum bisa dibuat. Coba lagi." : err.message));
     } finally {
       setPaying(false);
     }

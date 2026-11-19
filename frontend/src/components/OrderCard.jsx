@@ -4,6 +4,34 @@ import { formatRupiah } from "../data/products";
 const outlineBtn = "rounded-sm border border-stone-300 bg-white px-3.5 py-2 text-[10px] font-semibold text-neutral-800 hover:bg-stone-50";
 const solidBtn = "rounded-sm bg-maroon-dark px-3.5 py-2 text-[10px] font-semibold text-white transition-colors hover:bg-maroon disabled:opacity-60";
 
+const ORDER_STATUSES = {
+  dibayar: { label: "Menunggu Diproses", tone: "bg-amber-100 text-amber-800", final: false },
+  diproses: { label: "Sedang Diproses", tone: "bg-blue-100 text-blue-800", final: false },
+  dikirim: { label: "Sedang dalam Pengantaran", tone: "bg-violet-100 text-violet-800", final: false },
+  selesai: { label: "Selesai", tone: "bg-green-100 text-green-800", final: true },
+  dibatalkan: { label: "Dibatalkan", tone: "bg-red-100 text-red-800", final: true, cancelled: true },
+};
+
+const statusInfo = (status) =>
+  ORDER_STATUSES[status] ?? {
+    label: String(status ?? "Status tidak diketahui").replace(/_/g, " "),
+    tone: "bg-stone-100 text-neutral-700",
+    final: false,
+  };
+
+const orderNumber = (order) => order.order_number || `ORD-${order.order_id}`;
+
+const formatDate = (value) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "-";
+  return new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" }).format(date);
+};
+
+const storeLabel = (items = []) => {
+  const stores = [...new Set(items.map((item) => item.store_name).filter(Boolean))];
+  return stores.length ? stores.join(", ") : "LokaMart";
+};
+
 export default function OrderCard({ order, reordering, onReorder, onUnavailable }) {
   const status = statusInfo(order.status);
 

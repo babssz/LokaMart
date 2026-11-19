@@ -16,7 +16,6 @@ export default function SellerOrdersSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Mengambil data pesanan toko dari endpoint backend: GET /orders/store
   const fetchStoreOrders = async (statusFilter = null) => {
     try {
       setLoading(true);
@@ -24,7 +23,6 @@ export default function SellerOrdersSection() {
       const params = statusFilter ? { status: statusFilter } : {};
       const res = await api.get("/orders/store", { params });
       
-      // Mengambil array dari response paginasi OrderListOut (items)
       const list = Array.isArray(res.data) ? res.data : res.data.items ?? [];
       setOrders(list);
     } catch (err) {
@@ -37,13 +35,20 @@ export default function SellerOrdersSection() {
 
   useEffect(() => {
     fetchStoreOrders(activeTabValue);
+    const refreshOrders = () => fetchStoreOrders(activeTabValue);
+    const refreshInterval = window.setInterval(refreshOrders, 30000);
+    window.addEventListener("focus", refreshOrders);
+    document.addEventListener("visibilitychange", refreshOrders);
+    return () => {
+      window.clearInterval(refreshInterval);
+      window.removeEventListener("focus", refreshOrders);
+      document.removeEventListener("visibilitychange", refreshOrders);
+    };
   }, [activeTabValue]);
 
-  // Fungsi untuk memperbarui status pesanan (Contoh: Terima & Proses dari "dibayar" ke "diproses")
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
       await api.patch(`/orders/${orderId}/status`, { status: newStatus });
-      // Refresh ulang data pesanan setelah berhasil
       fetchStoreOrders(activeTabValue);
     } catch (err) {
       alert(err.response?.data?.detail || "Gagal memperbarui status pesanan.");

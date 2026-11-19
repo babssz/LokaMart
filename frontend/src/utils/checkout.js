@@ -1,6 +1,4 @@
-// Pengaturan dan fungsi bantu untuk halaman checkout
 
-// Pilihan pengiriman (sementara tetap di kode; tabel Order di ERD belum punya kolom pengiriman)
 export const COURIERS = [
   {
     id: "motor",
@@ -20,7 +18,6 @@ export const COURIERS = [
   },
 ];
 
-// srsMethod = nilai payment_method yang disepakati di SRS (Transfer Bank, E-Wallet, COD)
 export const PAYMENTS = [
   { id: "qris", name: "QRIS", detail: "BCA, Mandiri, GoPay, OVO, ShopeePay", srsMethod: "E-Wallet" },
   { id: "va", name: "Virtual Account (VA)", detail: "Bank Sulselbar, BCA, Mandiri, BRI", tag: "Otomatis", srsMethod: "Transfer Bank" },
@@ -29,7 +26,6 @@ export const PAYMENTS = [
 
 /* ---------- Alamat pengiriman ---------- */
 
-// Alamat disimpan di browser per pengguna sampai backend punya tempat menyimpannya.
 const addressKey = (userId) => `lokamart_address_${userId}`;
 
 export function loadAddress(user) {
@@ -44,7 +40,6 @@ export function loadAddress(user) {
 
 export const saveAddress = (userId, addr) => localStorage.setItem(addressKey(userId), JSON.stringify(addr));
 
-// Ambil angka saja dan buang awalan 62 / 0
 export function phoneDigits(v) {
   let d = String(v ?? "").replace(/\D/g, "");
   if (d.startsWith("62")) d = d.slice(2);
@@ -52,7 +47,6 @@ export function phoneDigits(v) {
   return d;
 }
 
-// Contoh: +62 812-3456-7890
 export function formatPhone(v) {
   const d = phoneDigits(v);
   if (!d) return "";

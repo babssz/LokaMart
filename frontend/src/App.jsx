@@ -9,7 +9,8 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import SellerDashboardPage from "./pages/SellerDashboardPage";
-import AdminDashboardPage from "./pages/AdminDashboardPage"; // Pastikan ini mengarah ke file AdminDashboardPage yang baru kita buat
+import AdminDashboardPage from "./pages/AdminDashboardPage";
+import RegisterStorePage from "./pages/RegisterStorePage"; 
 import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
@@ -66,6 +67,14 @@ export default function App() {
         element={
           <ProtectedRoute roles={["admin"]}>
             <AdminDashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/buka-toko"
+        element={
+          <ProtectedRoute>
+            <RegisterStorePage />
           </ProtectedRoute>
         }
       />

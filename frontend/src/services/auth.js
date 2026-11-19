@@ -13,6 +13,13 @@ export const registerRequest = (data) => api.post(PATH.register, data).then((r) 
 export const fetchMe = () => api.get(PATH.me).then((r) => r.data);
 
 export const updateMe = (data) => api.put(PATH.profile, data).then((r) => r.data);
+export const uploadProfilePhoto = (file) => {
+  const data = new FormData();
+  data.append("file", file);
+  return api
+    .post("/profile/photo", data, { headers: { "Content-Type": "multipart/form-data" } })
+    .then((r) => r.data);
+};
 
 export const updatePassword = (data) => api.put(PATH.password, data).then((r) => r.data);
 

@@ -1,4 +1,3 @@
-// Fungsi bantu untuk dashboard penjual
 
 export const PERIODS = [
   { id: "harian", label: "Harian", chip: "Hari ini", vs: "vs kemarin" },
@@ -7,7 +6,6 @@ export const PERIODS = [
   { id: "tahunan", label: "Tahunan", chip: "Tahun ini", vs: "vs tahun lalu" },
 ];
 
-// Rp 4,6 jt / Rp 18 rb / Rp 1,2 M (miliar)
 export function shortRupiah(n) {
   const v = Number(n) || 0;
   const fmt = (x) => x.toLocaleString("id-ID", { maximumFractionDigits: 1 });
@@ -17,7 +15,6 @@ export function shortRupiah(n) {
   return `Rp ${v}`;
 }
 
-// Judul dan subjudul grafik mengikuti periode yang dipilih
 export function chartTitles(period, now = new Date()) {
   const month = now.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
   const year = now.getFullYear();
@@ -33,7 +30,6 @@ export function chartTitles(period, now = new Date()) {
   }
 }
 
-// Unduh rekap sebagai CSV (bisa dibuka di Excel)
 export function downloadCsv(report, periodId) {
   const q = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
   const rows = [

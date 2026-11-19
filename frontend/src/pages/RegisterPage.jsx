@@ -4,7 +4,6 @@ import AuthLayout from "../components/AuthLayout";
 import FormField from "../components/FormField";
 import { registerRequest, getErrorMessage } from "../services/auth";
 
-// Ambil angka saja dan buang awalan 0 / 62, karena awalan +62 sudah ada di kolomnya.
 const phoneDigits = (v) => {
   let d = v.replace(/\D/g, "");
   if (d.startsWith("62")) d = d.slice(2);

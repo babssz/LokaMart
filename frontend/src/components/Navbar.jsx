@@ -31,7 +31,6 @@ export default function Navbar() {
     }
   };
 
-  // Fungsi helper untuk menentukan apakah link kategori sedang aktif
   const getCategoryClass = (kategoriTarget) => {
     const isActive = currentKategori === kategoriTarget;
     return (

@@ -8,10 +8,10 @@ import OrderCard from "../components/OrderCard";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import api from "../services/api";
+import { fetchOrders, ordersErrorMessage } from "../services/orders";
 
 const PAGE = 10;
 
-// Helper untuk format nomor pesanan jika propertinya berbeda
 const orderNumber = (o) => o.order_number || `ORD-${o.order_id}`;
 
 export default function OrdersPage() {
@@ -29,44 +29,43 @@ export default function OrdersPage() {
     location.state?.message ? { type: "ok", text: location.state.message } : null
   );
 
-  // Mengambil riwayat pesanan langsung dari backend FastAPI: GET /orders
   useEffect(() => {
     let cancelled = false;
-    setState((s) => ({ ...s, loading: true, error: "" }));
-
-    api.get("/orders")
-      .then((res) => {
-        if (!cancelled) {
-          console.log("Data Pesanan dari Backend:", res.data); // Cek F12 Console browser
-          
-          // Menangani berbagai kemungkinan format respons dari FastAPI
-          let list = [];
-          if (Array.isArray(res.data)) {
-            list = res.data;
-          } else if (res.data?.items && Array.isArray(res.data.items)) {
-            list = res.data.items;
-          } else if (res.data?.data && Array.isArray(res.data.data)) {
-            list = res.data.data;
-          }
-
-          setState({ orders: list, isSample: false, loading: false, error: "" });
-        }
-      })
-      .catch((err) => {
+    let requestPending = false;
+    const loadOrders = async (initial = false) => {
+      if (cancelled || requestPending) return;
+      requestPending = true;
+      if (initial) setState((s) => ({ ...s, loading: true, error: "" }));
+      try {
+        const { orders, isSample } = await fetchOrders();
+        if (!cancelled) setState({ orders, isSample, loading: false, error: "" });
+      } catch (err) {
         if (!cancelled) {
           setState({
             orders: [],
             isSample: false,
             loading: false,
-            error: err.response?.data?.detail || "Gagal memuat riwayat pesanan.",
+            error: ordersErrorMessage(err),
           });
         }
-      });
+      } finally {
+        requestPending = false;
+      }
+    };
+    const refreshOrders = () => loadOrders();
+
+    loadOrders(true);
+    const refreshInterval = window.setInterval(refreshOrders, 30000);
+    window.addEventListener("focus", refreshOrders);
+    document.addEventListener("visibilitychange", refreshOrders);
 
     return () => {
       cancelled = true;
+      window.clearInterval(refreshInterval);
+      window.removeEventListener("focus", refreshOrders);
+      document.removeEventListener("visibilitychange", refreshOrders);
     };
-  }, [userId]); 
+  }, [userId]);
 
   const q = query.trim().toLowerCase();
   const filtered = state.orders.filter((o) => {

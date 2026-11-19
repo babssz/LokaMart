@@ -51,6 +51,10 @@ def _to_out(order: Order) -> OrderOut:
                 quantity=i.quantity,
                 price=i.price,
                 subtotal=i.subtotal,
+                image=i.product.image,
+                variant=i.variant,
+                store_id=order.store_id,
+                store_name=order.store.store_name,
             )
             for i in order.items
         ],
@@ -80,43 +84,56 @@ def checkout(
     db: Session = Depends(get_db),
     user: User = Depends(require_role("pembeli")),
 ):
-    cart = db.scalar(select(Cart).where(Cart.user_id == user.user_id))
-    cart_items = (
-        db.scalars(select(CartItem).where(CartItem.cart_id == cart.cart_id)).all()
-        if cart
-        else []
-    )
-    if not cart_items:
+    cart_items = []
+    if data.items is not None:
+        requested_items = [
+            (item.product_id, item.quantity, item.variant) for item in data.items
+        ]
+    else:
+        cart = db.scalar(select(Cart).where(Cart.user_id == user.user_id))
+        cart_items = (
+            db.scalars(select(CartItem).where(CartItem.cart_id == cart.cart_id)).all()
+            if cart
+            else []
+        )
+        requested_items = [(item.product_id, item.quantity, None) for item in cart_items]
+
+    if not requested_items:
         raise HTTPException(status_code=400, detail="Keranjang masih kosong")
 
     # kunci baris produk supaya stok tidak diserobot checkout lain di saat bersamaan
+    requested_product_ids = {product_id for product_id, _, _ in requested_items}
     products = {
         p.product_id: p
         for p in db.scalars(
             select(Product)
-            .where(Product.product_id.in_([ci.product_id for ci in cart_items]))
+            .where(Product.product_id.in_(requested_product_ids))
             .with_for_update()
         ).all()
     }
 
     problems = []
-    for ci in cart_items:
-        p = products.get(ci.product_id)
+    requested_quantities: dict[int, int] = defaultdict(int)
+    for product_id, quantity, _ in requested_items:
+        requested_quantities[product_id] += quantity
+    for product_id, quantity in requested_quantities.items():
+        p = products.get(product_id)
         if p is None or p.status != "aktif":
-            problems.append(f"Produk #{ci.product_id} sudah tidak tersedia")
-        elif ci.quantity > p.stock:
+            problems.append(f"Produk #{product_id} sudah tidak tersedia")
+        elif quantity > p.stock:
             problems.append(f"Stok {p.product_name} tidak cukup (tersedia {p.stock})")
     if problems:
         raise HTTPException(status_code=409, detail="; ".join(problems))
 
-    by_store: dict[int, list[CartItem]] = defaultdict(list)
-    for ci in cart_items:
-        by_store[products[ci.product_id].store_id].append(ci)
+    by_store: dict[int, list[tuple[Product, int, str | None]]] = defaultdict(list)
+    for product_id, quantity, variant in requested_items:
+        product = products[product_id]
+        by_store[product.store_id].append((product, quantity, variant))
 
     created_ids = []
     for store_id, items in by_store.items():
         total = sum(
-            (products[ci.product_id].price * ci.quantity for ci in items), Decimal("0")
+            (product.price * quantity for product, quantity, _ in items), Decimal("0")
         )
         order = Order(
             user_id=user.user_id, store_id=store_id, total_amount=total, status="dibayar"
@@ -124,32 +141,32 @@ def checkout(
         db.add(order)
         db.flush()  # supaya order_id terisi
 
-        for ci in items:
-            p = products[ci.product_id]
+        for p, quantity, variant in items:
             db.add(
                 OrderItem(
                     order_id=order.order_id,
                     product_id=p.product_id,
-                    quantity=ci.quantity,
+                    quantity=quantity,
                     price=p.price,  # harga dibekukan saat checkout
-                    subtotal=p.price * ci.quantity,
+                    subtotal=p.price * quantity,
+                    variant=variant,
                 )
             )
-            p.stock -= ci.quantity
+            p.stock -= quantity
 
-        # pembayaran simulasi: langsung dianggap berhasil
+        payment_pending = data.payment_method == "COD"
         db.add(
             Payment(
                 order_id=order.order_id,
                 payment_method=data.payment_method,
-                payment_status="berhasil",
-                payment_date=func.now(),
+                payment_status="menunggu" if payment_pending else "berhasil",
+                payment_date=None if payment_pending else func.now(),
             )
         )
         created_ids.append(order.order_id)
 
-    for ci in cart_items:
-        db.delete(ci)
+    for cart_item in cart_items:
+        db.delete(cart_item)
     db.commit()
 
     orders = db.scalars(

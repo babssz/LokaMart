@@ -1,6 +1,5 @@
 import api from "./api";
 
-// Ubah ke true supaya laporan mengambil data langsung dari backend FastAPI
 export const SERVER_REPORTS = true;
 export const SHOW_SAMPLE_REPORT = false;
 
@@ -41,10 +40,8 @@ const normalize = (r) => {
   };
 };
 
-// Mengembalikan { report, isSample }
 export async function fetchSalesReport(period) {
   if (SERVER_REPORTS) {
-    // Mengirim parameter periode atau rentang tanggal ke endpoint backend /reports/sales
     const res = await api.get("/reports/sales", { params: { period } });
     return { report: normalize(res.data), isSample: false };
   }

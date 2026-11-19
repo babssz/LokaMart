@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ShieldCheck, SlidersHorizontal, X } from "lucide-react";
 import Navbar from "../components/Navbar";
@@ -8,6 +8,7 @@ import ProductCard from "../components/ProductCard";
 import FilterSidebar from "../components/FilterSidebar";
 import useAllProducts from "../hooks/useAllProducts";
 import { PAGE_SIZE, SORTS, categoryCounts, filterProducts, pageNumbers, rupiah, sortProducts } from "../utils/catalog";
+import api from "../services/api";
 
 function Pagination({ page, pages, onChange }) {
   return (
@@ -57,6 +58,49 @@ export default function CatalogPage() {
   const [params, setParams] = useSearchParams();
   const { products, loading } = useAllProducts();
   const [showFilter, setShowFilter] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    let loadingCategories = false;
+    let hasLoggedError = false;
+    const loadCategories = async () => {
+      if (cancelled || loadingCategories || document.visibilityState === "hidden") return;
+      loadingCategories = true;
+      try {
+        const response = await api.get("/categories");
+        const list = Array.isArray(response.data)
+          ? response.data
+          : Array.isArray(response.data?.items)
+            ? response.data.items
+            : [];
+        if (!cancelled) {
+          setCategories(list);
+          hasLoggedError = false;
+        }
+      } catch (err) {
+        if (!cancelled && !hasLoggedError) {
+          console.warn("Gagal memuat kategori filter:", err.message);
+          hasLoggedError = true;
+        }
+      } finally {
+        loadingCategories = false;
+      }
+    };
+
+    const refreshOnFocus = () => loadCategories();
+    loadCategories();
+    const refreshInterval = window.setInterval(loadCategories, 30000);
+    window.addEventListener("focus", refreshOnFocus);
+    document.addEventListener("visibilitychange", refreshOnFocus);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(refreshInterval);
+      window.removeEventListener("focus", refreshOnFocus);
+      document.removeEventListener("visibilitychange", refreshOnFocus);
+    };
+  }, []);
 
   const filters = {
     kategori: params.getAll("kategori"),
@@ -97,7 +141,6 @@ export default function CatalogPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Chip filter aktif
   const priceLabel =
     filters.min && filters.max
       ? `${rupiah(filters.min)} – ${rupiah(filters.max)}`
@@ -173,7 +216,7 @@ export default function CatalogPage() {
               <div className={showFilter ? "block" : "hidden lg:block"}>
                 <FilterSidebar
                   key={filterKey}
-                  categories={categoryCounts(products)}
+                  categories={categoryCounts(products, categories)}
                   applied={filters}
                   onApply={(f) => {
                     update({ kategori: f.kategori, min: f.min, max: f.max, stok: f.stok ? "ready" : "" });

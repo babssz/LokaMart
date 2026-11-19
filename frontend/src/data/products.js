@@ -39,5 +39,4 @@ export const fallbackCategories = [
   { category_id: 6, category_name: "Aksesoris" },
 ];
 
-// price dari backend bertipe Decimal, jadi di JSON bisa berupa string ("50000.00")
 export const formatRupiah = (n) => "Rp " + Number(n ?? 0).toLocaleString("id-ID");

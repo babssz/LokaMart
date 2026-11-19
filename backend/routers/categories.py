@@ -10,6 +10,15 @@ from schemas import CategoryCreate, CategoryOut
 router = APIRouter(prefix="/categories", tags=["Kategori"])
 
 
+def _category_response(category: Category, product_count: int) -> dict[str, int | str | None]:
+    return {
+        "category_id": category.category_id,
+        "category_name": category.category_name,
+        "description": category.description,
+        "product_count": product_count,
+    }
+
+
 def _name_taken(db: Session, name: str, exclude_id: int | None = None) -> bool:
     query = select(Category.category_id).where(
         func.lower(Category.category_name) == name.lower()
@@ -21,7 +30,13 @@ def _name_taken(db: Session, name: str, exclude_id: int | None = None) -> bool:
 
 @router.get("", response_model=list[CategoryOut])
 def list_categories(db: Session = Depends(get_db)):
-    return db.scalars(select(Category).order_by(Category.category_name)).all()
+    rows = db.execute(
+        select(Category, func.count(Product.product_id))
+        .outerjoin(Product, Product.category_id == Category.category_id)
+        .group_by(Category.category_id)
+        .order_by(Category.category_name)
+    )
+    return [_category_response(category, product_count) for category, product_count in rows]
 
 
 @router.post("", response_model=CategoryOut, status_code=201)
@@ -37,7 +52,7 @@ def create_category(
     db.add(category)
     db.commit()
     db.refresh(category)
-    return category
+    return _category_response(category, 0)
 
 
 @router.put("/{category_id}", response_model=CategoryOut)
@@ -57,7 +72,10 @@ def update_category(
     category.description = data.description
     db.commit()
     db.refresh(category)
-    return category
+    product_count = db.scalar(
+        select(func.count(Product.product_id)).where(Product.category_id == category_id)
+    )
+    return _category_response(category, product_count or 0)
 
 
 @router.delete("/{category_id}", status_code=204)

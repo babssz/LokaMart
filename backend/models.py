@@ -20,6 +20,7 @@ class User(Base):
     role = Column(String(20), nullable=False)
     phone = Column(String(20))
     address = Column(Text)
+    photo_url = Column(String(255))
     is_active = Column(Boolean, nullable=False, server_default="true")
 
 
@@ -28,6 +29,7 @@ class Store(Base):
 
     store_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.user_id"), unique=True, nullable=False)
+    category_id = Column(Integer, ForeignKey("categories.category_id"))
     store_name = Column(String(100), nullable=False)
     description = Column(Text)
     address = Column(Text)
@@ -107,6 +109,7 @@ class OrderItem(Base):
     quantity = Column(Integer, nullable=False)
     price = Column(Numeric(12, 2), nullable=False)
     subtotal = Column(Numeric(12, 2), nullable=False)
+    variant = Column(String(255))
     product = relationship("Product")
 
 

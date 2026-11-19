@@ -19,7 +19,7 @@ export default function HomePage() {
           <>
             <MemberHero />
             <CategoryGrid />
-            <ProductSection eyebrow="" subtitle="" title="Sorotan lokal minggu ini" limit={4} bg="bg-white" />
+            <ProductSection eyebrow="" subtitle="" title="Sorotan lokal minggu ini" limit={5} bg="bg-white" />
             <StorySection />
             <WhyShop showHeading={false} bg="bg-blush" />
           </>

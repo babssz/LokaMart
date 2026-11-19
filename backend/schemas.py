@@ -32,6 +32,7 @@ class UserOut(BaseModel):
     role: str
     phone: str | None
     address: str | None
+    photo_url: str | None = None
     is_active: bool
 
 
@@ -64,6 +65,7 @@ class CategoryOut(BaseModel):
     category_id: int
     category_name: str
     description: str | None
+    product_count: int = 0
 
 # =========================================================
 # PROFIL & TOKO
@@ -85,6 +87,13 @@ class StoreUpdate(BaseModel):
     address: str | None = None
 
 
+class StoreRegistration(BaseModel):
+    store_name: str = Field(min_length=1, max_length=100)
+    description: str = Field(min_length=1)
+    address: str = Field(min_length=1)
+    category_id: int = Field(gt=0)
+
+
 class StoreOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -92,6 +101,12 @@ class StoreOut(BaseModel):
     store_name: str
     description: str | None
     address: str | None
+    category_id: int | None = None
+
+
+class StoreRegistrationOut(BaseModel):
+    store: StoreOut
+    user: UserOut
 
 
 # =========================================================
@@ -178,8 +193,17 @@ class CartOut(BaseModel):
 # =========================================================
 # PESANAN & PEMBAYARAN
 # =========================================================
+class CheckoutItemRequest(BaseModel):
+    product_id: int = Field(gt=0)
+    quantity: int = Field(gt=0)
+    variant: str | None = Field(default=None, max_length=255)
+
+
 class CheckoutRequest(BaseModel):
-    payment_method: Literal["transfer_bank", "e_wallet"]
+    payment_method: Literal[
+        "transfer_bank", "e_wallet", "Transfer Bank", "E-Wallet", "COD"
+    ]
+    items: list[CheckoutItemRequest] | None = Field(default=None, min_length=1)
 
 
 class OrderStatusUpdate(BaseModel):
@@ -192,6 +216,10 @@ class OrderItemOut(BaseModel):
     quantity: int
     price: Decimal
     subtotal: Decimal
+    image: str | None = None
+    variant: str | None = None
+    store_id: int | None = None
+    store_name: str | None = None
 
 
 class PaymentOut(BaseModel):

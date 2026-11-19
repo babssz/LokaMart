@@ -357,7 +357,6 @@ export default function ProductDetailPage() {
   );
 }
 
-// Kerangka halaman: navbar di atas, footer di bawah
 function Shell({ children }) {
   return (
     <div className="flex min-h-screen flex-col bg-white font-sans text-neutral-900">

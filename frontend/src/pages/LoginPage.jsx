@@ -32,8 +32,6 @@ export default function LoginPage() {
       const data = await loginRequest({ email: id, password: form.password });
       login(data, form.remember);
 
-      // Cek apakah user yang login adalah admin (berdasarkan role dari response API atau email khusus)
-      // Sesuaikan properti role/is_admin dengan struktur data yang dikembalikan oleh FastAPI kamu
       const userRole = data?.role || data?.user?.role;
       const userEmail = id.toLowerCase();
 

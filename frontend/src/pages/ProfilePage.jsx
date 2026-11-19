@@ -6,12 +6,11 @@ import Footer from "../components/Footer";
 import Container from "../components/Container";
 import FormField from "../components/FormField";
 import { useAuth } from "../context/AuthContext";
-import { fetchMe, updateMe, updatePassword, getErrorMessage } from "../services/auth";
+import { fetchMe, updateMe, updatePassword, uploadProfilePhoto, getErrorMessage } from "../services/auth";
 
 const labelCls = "text-[10px] uppercase tracking-wide";
 const emptyPw = { current: "", next: "", confirm: "" };
 
-// Ambil angka saja dan buang awalan 62 / 0, karena awalan +62 sudah ada di kolomnya.
 const phoneToDigits = (v) => {
   let d = String(v ?? "").replace(/\D/g, "");
   if (d.startsWith("62")) d = d.slice(2);
@@ -39,7 +38,6 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState(null); // { type: "ok" | "error", text }
 
-  // Ambil data terbaru dari backend (GET /auth/me)
   useEffect(() => {
     let cancelled = false;
     fetchMe()
@@ -65,7 +63,6 @@ export default function ProfilePage() {
     };
   }, [updateUser, logout, navigate]);
 
-  // Lepas URL pratinjau foto yang sudah tidak dipakai
   useEffect(() => () => photo?.preview && URL.revokeObjectURL(photo.preview), [photo]);
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -112,14 +109,10 @@ export default function ProfilePage() {
     if (form.email.trim() !== user.email) {
       return setStatus({ type: "error", text: "Perubahan email belum didukung oleh server." });
     }
-    if (photo) {
-      return setStatus({ type: "error", text: "Unggah foto profil belum didukung oleh server." });
-    }
-
     const payload = { name: form.name.trim(), phone: `+62${digits}`, address: user.address ?? null };
     const dataChanged = payload.name !== user.name || payload.phone !== user.phone;
 
-    if (!dataChanged && !wantsPassword) {
+    if (!dataChanged && !wantsPassword && !photo) {
       return setStatus({ type: "ok", text: "Tidak ada perubahan untuk disimpan." });
     }
 
@@ -131,6 +124,13 @@ export default function ProfilePage() {
       if (dataChanged) {
         next = await updateMe(payload);
         updateUser(next);
+      }
+
+      if (photo) {
+        step = "unggah foto profil";
+        next = await uploadProfilePhoto(photo.file);
+        updateUser(next);
+        setPhoto(null);
       }
 
       if (wantsPassword) {

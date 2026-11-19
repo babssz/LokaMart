@@ -35,7 +35,6 @@ export function AuthProvider({ children }) {
     setUser(null);
   }, []);
 
-  // Perbarui data user (misalnya setelah ubah profil) di tempat penyimpanan yang sama dengan login
   const updateUser = useCallback((next) => {
     const store = localStorage.getItem("user") ? localStorage : sessionStorage;
     store.setItem("user", JSON.stringify(next));

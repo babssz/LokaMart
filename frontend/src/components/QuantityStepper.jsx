@@ -1,6 +1,5 @@
 import { Minus, Plus } from "lucide-react";
 
-// Pengatur jumlah (− 1 +). Dipakai di halaman detail produk dan nanti di keranjang.
 export default function QuantityStepper({ value, onChange, min = 1, max = 99, disabled = false }) {
   const btn = "grid h-8 w-8 place-items-center text-neutral-700 hover:bg-stone-50 disabled:opacity-40";
 

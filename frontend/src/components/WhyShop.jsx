@@ -7,7 +7,6 @@ const reasons = [
   { icon: ShieldCheck, title: "Informasi Produk Transparan", text: "Temukan informasi produk, harga, serta identitas penjual secara jelas sebelum melakukan pembelian." },
 ];
 
-// showHeading=false dipakai di beranda setelah login (hanya tiga kartu).
 export default function WhyShop({ showHeading = true, bg = "bg-blush/50" }) {
   return (
     <section className={bg}>

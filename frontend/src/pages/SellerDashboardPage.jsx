@@ -28,11 +28,9 @@ export default function SellerDashboardPage() {
   const [period, setPeriod] = useState("bulanan");
   const [state, setState] = useState({ report: null, isSample: false, loading: true, error: "" });
   
-  // State untuk Nama Toko & Inisial Header
   const [storeName, setStoreName] = useState(user?.name ?? "Toko Saya");
   const [initials, setInitials] = useState("TS");
 
-  // Fungsi untuk mengambil data profil toko terbaru dari endpoint backend: GET /profile/store
   const fetchStoreHeader = async () => {
     try {
       const res = await api.get("/profile/store");
@@ -43,7 +41,6 @@ export default function SellerDashboardPage() {
         setInitials(ini || "TS");
       }
     } catch (err) {
-      // Biarkan default jika gagal
     }
   };
 
