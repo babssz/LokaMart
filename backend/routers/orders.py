@@ -77,12 +77,12 @@ def _paginate(db: Session, conditions: list, page: int, limit: int) -> OrderList
     )
 
 
-# ---------- Pembeli: checkout ----------
+# ---------- Pembeli dan penjual: checkout ----------
 @router.post("/checkout", response_model=list[OrderOut], status_code=201)
 def checkout(
     data: CheckoutRequest,
     db: Session = Depends(get_db),
-    user: User = Depends(require_role("pembeli")),
+    user: User = Depends(require_role("pembeli", "penjual")),
 ):
     cart_items = []
     if data.items is not None:

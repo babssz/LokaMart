@@ -64,7 +64,7 @@ def _build_cart_out(db: Session, cart: Cart) -> CartOut:
 @router.get("", response_model=CartOut)
 def get_cart(
     db: Session = Depends(get_db),
-    user: User = Depends(require_role("pembeli")),
+    user: User = Depends(require_role("pembeli", "penjual")),
 ):
     return _build_cart_out(db, _get_cart(db, user))
 
@@ -73,7 +73,7 @@ def get_cart(
 def add_item(
     data: CartItemAdd,
     db: Session = Depends(get_db),
-    user: User = Depends(require_role("pembeli")),
+    user: User = Depends(require_role("pembeli", "penjual")),
 ):
     product = db.get(Product, data.product_id)
     if product is None or product.status != "aktif":
@@ -111,7 +111,7 @@ def update_item(
     cart_item_id: int,
     data: CartItemUpdate,
     db: Session = Depends(get_db),
-    user: User = Depends(require_role("pembeli")),
+    user: User = Depends(require_role("pembeli", "penjual")),
 ):
     cart = _get_cart(db, user)
     item = _get_own_item(db, cart, cart_item_id)
@@ -133,7 +133,7 @@ def update_item(
 def remove_item(
     cart_item_id: int,
     db: Session = Depends(get_db),
-    user: User = Depends(require_role("pembeli")),
+    user: User = Depends(require_role("pembeli", "penjual")),
 ):
     cart = _get_cart(db, user)
     item = _get_own_item(db, cart, cart_item_id)
