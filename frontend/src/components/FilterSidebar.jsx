@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { PRICE_PRESETS, matchCat } from "../utils/catalog";
 
-const sectionTitle = "text-[10px] font-semibold uppercase tracking-wide text-neutral-800";
+const sectionTitle = "text-[12px] font-semibold uppercase tracking-wide text-neutral-800";
 
 export default function FilterSidebar({ categories, applied, onApply }) {
   const [sel, setSel] = useState(applied.kategori);
@@ -25,12 +25,12 @@ export default function FilterSidebar({ categories, applied, onApply }) {
   };
 
   return (
-    <form onSubmit={submit} className="rounded-sm border border-stone-200 bg-white p-4">
+    <form onSubmit={submit} className="rounded-[10px] border border-stone-200 bg-white p-4">
       <div className="flex items-center justify-between gap-2">
-        <h2 className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-900">
+        <h2 className="flex items-center gap-2 text-[14px] font-semibold uppercase tracking-wide text-neutral-900">
           <SlidersHorizontal className="h-3.5 w-3.5" /> Filter Pencarian
         </h2>
-        <span className="text-[10px] text-neutral-400">{selectedCount} Terpilih</span>
+        <span className="text-[12px] text-neutral-400">{selectedCount} Terpilih</span>
       </div>
 
       {/* Kategori */}
@@ -47,13 +47,13 @@ export default function FilterSidebar({ categories, applied, onApply }) {
 
         {openCat && (
           <ul className="mt-3 max-h-60 space-y-2.5 overflow-y-auto pr-1">
-            {categories.length === 0 && <li className="text-[11px] text-neutral-400">Belum ada kategori.</li>}
+            {categories.length === 0 && <li className="text-[14px] text-neutral-400">Belum ada kategori.</li>}
             {categories.map((c) => (
               <li key={c.name}>
-                <label className="flex cursor-pointer items-center gap-2 text-xs text-neutral-700">
-                  <input type="checkbox" checked={isChecked(c.name)} onChange={() => toggle(c.name)} className="h-3.5 w-3.5 accent-maroon-dark" />
+                <label className="flex cursor-pointer items-center gap-2 text-sm text-neutral-700">
+                  <input type="checkbox" checked={isChecked(c.name)} onChange={() => toggle(c.name)} className="h-4 w-4 accent-maroon-dark" />
                   <span className="flex-1">{c.name}</span>
-                  <span className="text-[10px] text-neutral-400">{c.count}</span>
+                  <span className="text-[12px] text-neutral-400">{c.count}</span>
                 </label>
               </li>
             ))}
@@ -71,7 +71,7 @@ export default function FilterSidebar({ categories, applied, onApply }) {
             ["Max", max, setMax],
           ].map(([label, value, set]) => (
             <label key={label} className="block rounded-sm bg-stone-100 px-2 py-1.5">
-              <span className="block text-[9px] font-semibold uppercase tracking-wide text-neutral-500">{label}</span>
+              <span className="block text-[12px] font-semibold uppercase tracking-wide text-neutral-500">{label}</span>
               <input
                 type="number"
                 inputMode="numeric"
@@ -79,7 +79,7 @@ export default function FilterSidebar({ categories, applied, onApply }) {
                 value={value}
                 onChange={(e) => set(e.target.value)}
                 placeholder="0"
-                className="w-full bg-transparent text-xs font-semibold text-neutral-900 placeholder:text-stone-400 focus:outline-none"
+                className="w-full bg-transparent text-sm font-semibold text-neutral-900 placeholder:text-stone-400 focus:outline-none"
               />
             </label>
           ))}
@@ -87,7 +87,7 @@ export default function FilterSidebar({ categories, applied, onApply }) {
 
         <div className="mt-3 space-y-2" role="radiogroup" aria-label="Pilihan cepat harga">
           {PRICE_PRESETS.map((p) => (
-            <label key={p.label} className="flex cursor-pointer items-center gap-2 text-[11px] text-neutral-700">
+            <label key={p.label} className="flex cursor-pointer items-center gap-2 text-[12px] text-neutral-700">
               <input
                 type="radio"
                 name="harga"
@@ -96,7 +96,7 @@ export default function FilterSidebar({ categories, applied, onApply }) {
                   setMin(p.min);
                   setMax(p.max);
                 }}
-                className="h-3 w-3 accent-maroon-dark"
+                className="h-4 w-4 accent-maroon-dark"
               />
               {p.label}
             </label>
@@ -106,15 +106,15 @@ export default function FilterSidebar({ categories, applied, onApply }) {
 
       {/* Ketersediaan */}
       <div className="mt-4 border-t border-stone-200 pt-4">
-        <label className="flex cursor-pointer items-center gap-2 text-xs text-neutral-700">
-          <input type="checkbox" checked={stok} onChange={(e) => setStok(e.target.checked)} className="h-3.5 w-3.5 accent-maroon-dark" />
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-neutral-700">
+          <input type="checkbox" checked={stok} onChange={(e) => setStok(e.target.checked)} className="h-4 w-4 accent-maroon-dark" />
           Hanya yang ready stock
         </label>
       </div>
 
       <button
         type="submit"
-        className="mt-5 w-full rounded-sm bg-maroon-dark py-3 text-[11px] font-semibold uppercase tracking-wide text-white transition-colors hover:bg-maroon"
+        className="mt-5 w-full rounded-[10px] bg-maroon-dark py-3 text-[14px] font-semibold uppercase tracking-wide text-white transition-colors hover:bg-maroon"
       >
         Terapkan Filter
       </button>
