@@ -77,16 +77,16 @@ export default function SellerDashboardPage() {
         <Container className="py-6 md:py-8">
 
           {/* Profil Toko (Header Atas) */}
-          <section className="mt-4 overflow-hidden rounded-sm border border-stone-200 bg-white">
+          <section className="mt-4 overflow-hidden rounded-[10px] border border-stone-200 bg-white">
             <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5">
-              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-md bg-maroon-dark text-lg font-semibold text-white">
+              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-[10px] bg-maroon-dark text-lg font-semibold text-white">
                 {initials}
               </span>
               <div className="min-w-0">
                 <h1 className="truncate text-xl font-bold uppercase tracking-tight text-neutral-900 sm:text-2xl">
                   {storeName}
                 </h1>
-                <p className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-neutral-600">
+                <p className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] text-neutral-600">
                   <span className="inline-flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-emerald-500" /> Toko Buka
                   </span>
@@ -103,7 +103,7 @@ export default function SellerDashboardPage() {
                     key={t.id}
                     onClick={() => setActiveTab(t.id)}
                     className={
-                      "shrink-0 border-b-2 px-3 py-3 text-[10px] font-semibold uppercase tracking-wide sm:px-4 cursor-pointer transition-colors " +
+                      "shrink-0 border-b-2 px-3 py-3 text-[14px] font-semibold uppercase tracking-wide sm:px-4 cursor-pointer transition-colors " +
                       (isActive ? "border-maroon-dark text-maroon-dark bg-white" : "border-transparent text-neutral-500 hover:text-neutral-900")
                     }
                   >
@@ -117,7 +117,7 @@ export default function SellerDashboardPage() {
           {/* TAB 1: LAPORAN PENJUALAN */}
           {activeTab === "laporan" && (
             <>
-              <div className="mt-6 inline-flex rounded-sm border border-stone-200 bg-white p-0.5" role="tablist" aria-label="Periode laporan">
+              <div className="mt-6 inline-flex rounded-[10px] border border-stone-200 bg-white p-0.5" role="tablist" aria-label="Periode laporan">
                 {PERIODS.map((p) => (
                   <button
                     key={p.id}
@@ -125,7 +125,7 @@ export default function SellerDashboardPage() {
                     aria-selected={period === p.id}
                     onClick={() => setPeriod(p.id)}
                     className={
-                      "rounded-sm px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide transition-colors sm:px-4 " +
+                      "rounded-sm px-3 py-1.5 text-[14px] font-semibold uppercase tracking-wide transition-colors sm:px-4 " +
                       (period === p.id ? "bg-neutral-900 text-white" : "text-neutral-600 hover:bg-stone-100")
                     }
                   >
@@ -141,7 +141,7 @@ export default function SellerDashboardPage() {
               )}
 
               {error && (
-                <p role="alert" className="mt-4 rounded-sm bg-red-50 px-3 py-2 text-xs text-red-800">
+                <p role="alert" className="mt-4 rounded-[10px] bg-red-50 px-3 py-2 text-xs text-red-800">
                   {error}
                 </p>
               )}
@@ -150,7 +150,7 @@ export default function SellerDashboardPage() {
                 <div className="mt-4 space-y-4" aria-busy="true">
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     {[0, 1, 2, 3].map((i) => (
-                      <div key={i} className="h-28 animate-pulse rounded-sm bg-white" />
+                      <div key={i} className="h-28 animate-pulse rounded-[10px] bg-white" />
                     ))}
                   </div>
                   <div className="h-72 animate-pulse rounded-sm bg-white" />
@@ -168,20 +168,20 @@ export default function SellerDashboardPage() {
                     <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
                       <SalesChart title={title} subtitle={subtitle} data={report.trend} onDownload={() => downloadCsv(report, period)} />
 
-                      <aside className="rounded-sm border border-stone-200 bg-white p-4 sm:p-5">
-                        <h2 className="text-sm font-bold text-neutral-900">Top 3 Produk Terlaris</h2>
+                      <aside className="rounded-[10px] border border-stone-200 bg-white p-4 sm:p-5">
+                        <h2 className="text-[16px] font-bold text-neutral-900">Top 3 Produk Terlaris</h2>
                         {report.topProducts.length === 0 ? (
-                          <p className="py-8 text-center text-xs text-neutral-500">Belum ada penjualan.</p>
+                          <p className="py-8 text-center text-sm text-neutral-500">Belum ada penjualan.</p>
                         ) : (
                           <ol className="mt-3 divide-y divide-stone-200">
                             {report.topProducts.slice(0, 3).map((p, i) => (
                               <li key={p.id ?? p.name} className="flex items-center gap-3 py-3">
-                                <span className="w-5 shrink-0 text-[11px] font-semibold text-neutral-400">{String(i + 1).padStart(2, "0")}</span>
+                                <span className="w-5 shrink-0 text-[14px] font-semibold text-neutral-400">{String(i + 1).padStart(2, "0")}</span>
                                 <div className="min-w-0 flex-1">
-                                  <p className="line-clamp-2 text-xs font-semibold text-neutral-900">{p.name}</p>
-                                  <p className="text-[10px] text-neutral-500">Terjual {p.sold.toLocaleString("id-ID")}</p>
+                                  <p className="line-clamp-2 text-[14px] font-semibold text-neutral-900">{p.name}</p>
+                                  <p className="text-[12px] text-neutral-500">Terjual {p.sold.toLocaleString("id-ID")}</p>
                                 </div>
-                                <p className="shrink-0 text-xs font-bold text-neutral-900">{shortRupiah(p.revenue)}</p>
+                                <p className="shrink-0 text-[14px] font-bold text-neutral-900">{shortRupiah(p.revenue)}</p>
                               </li>
                             ))}
                           </ol>

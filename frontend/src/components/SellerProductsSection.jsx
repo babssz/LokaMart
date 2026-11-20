@@ -119,41 +119,35 @@ export default function SellerProductsSection() {
   return (
     <div className="mt-6 space-y-4">
       {/* Header Aksi: Judul & Tombol Tambah Produk */}
-      <div className="flex items-center justify-between bg-white p-4 rounded-sm border border-stone-200 shadow-sm">
-        <div>
-          <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-tight">Kelola Produk Toko</h2>
-          <p className="text-[11px] text-neutral-500">Tambah, ubah, atau atur stok dan gambar katalog produkmu.</p>
-        </div>
         <button
           onClick={handleOpenAddModal}
-          className="inline-flex items-center gap-1.5 rounded-sm bg-maroon-dark px-4 py-2 text-[10px] font-semibold uppercase tracking-wide text-white hover:bg-maroon transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 rounded-[10px] bg-maroon-dark px-4 py-2 text-[14px] font-semibold uppercase tracking-wide text-white hover:bg-maroon transition-colors cursor-pointer"
         >
           <Plus className="h-4 w-4" /> Tambah Produk Baru
         </button>
-      </div>
 
       {successMsg && (
-        <div className="flex items-center gap-2 rounded-sm bg-emerald-50 px-3 py-2 text-xs text-emerald-800 border border-emerald-200">
+        <div className="flex items-center gap-2 rounded-[10px] bg-emerald-50 px-3 py-2 text-sm text-emerald-800 border border-emerald-200">
           <CheckCircle className="h-4 w-4 text-emerald-600" /> {successMsg}
         </div>
       )}
 
       {error && (
-        <div className="flex items-center gap-2 rounded-sm bg-red-50 px-3 py-2 text-xs text-red-800 border border-red-200">
+        <div className="flex items-center gap-2 rounded-[10px] bg-red-50 px-3 py-2 text-sm text-red-800 border border-red-200">
           <AlertCircle className="h-4 w-4 text-red-600" /> {error}
         </div>
       )}
 
       {/* Tabel / List Produk */}
-      <div className="overflow-hidden rounded-sm border border-stone-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-[10px] border border-stone-200 bg-white shadow-sm">
         {loading ? (
-          <div className="py-12 text-center text-xs text-neutral-500">Memuat produk toko...</div>
+          <div className="py-12 text-center text-sm text-neutral-500">Memuat produk toko...</div>
         ) : products.length === 0 ? (
-          <div className="py-12 text-center text-xs text-neutral-500">Belum ada produk yang terdaftar di toko ini.</div>
+          <div className="py-12 text-center text-sm text-neutral-500">Belum ada produk yang terdaftar di toko ini.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="border-b border-stone-200 bg-stone-50 text-[10px] font-bold uppercase tracking-wide text-neutral-500">
+            <table className="w-full text-left text-[14px]">
+              <thead className="border-b border-stone-200 bg-stone-50 text-[14px] font-bold uppercase tracking-wide text-neutral-500">
                 <tr>
                   <th className="p-3">Produk</th>
                   <th className="p-3">Kategori</th>
@@ -168,11 +162,11 @@ export default function SellerProductsSection() {
                   <tr key={p.product_id} className="hover:bg-stone-50/50">
                     <td className="p-3">
                       <div className="flex items-center gap-3">
-                        <div className="relative group h-12 w-12 shrink-0">
+                        <div className="relative group h-14 w-14 shrink-0">
                           {p.image ? (
-                            <img src={p.image} alt="" className="h-12 w-12 rounded-sm object-cover border border-stone-200" />
+                            <img src={p.image} alt="" className="h-14 w-14 rounded-[10px] object-cover border border-stone-200" />
                           ) : (
-                            <div className="grid h-12 w-12 place-items-center rounded-sm bg-stone-100 text-[9px] text-neutral-400 border">
+                            <div className="grid h-12 w-12 place-items-center rounded-[10px] bg-stone-100 text-[12px] text-neutral-400 border">
                               Foto
                             </div>
                           )}
@@ -182,37 +176,37 @@ export default function SellerProductsSection() {
                           </label>
                         </div>
                         <div className="min-w-0">
-                          <p className="font-semibold text-neutral-900 truncate max-w-xs">{p.product_name}</p>
-                          <span className="text-[10px] text-neutral-400">ID: #{p.product_id}</span>
+                          <p className="font-semibold text-neutral-900 truncate max-w-xs text-[16px]">{p.product_name}</p>
+                          <span className="text-[14px] text-neutral-400">ID: #{p.product_id}</span>
                         </div>
                       </div>
                     </td>
                     <td className="p-3 text-neutral-600">{p.category_name || "-"}</td>
                     <td className="p-3 font-bold text-neutral-900">{formatRupiah(p.price)}</td>
                     <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded-sm font-semibold text-[10px] ${p.stock > 0 ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
+                      <span className={`px-2 py-0.5 rounded-[10px] font-semibold text-[14px] ${p.stock > 0 ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
                         {p.stock} unit
                       </span>
                     </td>
                     <td className="p-3">
-                      <span className="uppercase text-[10px] font-bold text-neutral-700 bg-stone-100 px-2 py-0.5 rounded">
+                      <span className="uppercase text-[14px] font-bold text-neutral-700 bg-stone-100 px-2 py-0.5 rounded-[10px]">
                         {p.status}
                       </span>
                     </td>
                     <td className="p-3 text-right space-x-2">
                       <button
                         onClick={() => handleOpenEditModal(p)}
-                        className="p-1.5 rounded-sm border border-stone-300 bg-white text-neutral-700 hover:bg-stone-50 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-[10px] border border-stone-300 bg-white text-neutral-700 hover:bg-stone-50 transition-colors cursor-pointer"
                         title="Edit Produk"
                       >
-                        <Edit2 className="h-3.5 w-3.5" />
+                        <Edit2 className="h-4.5 w-4.5" />
                       </button>
                       <button
                         onClick={() => handleDeleteProduct(p.product_id)}
-                        className="p-1.5 rounded-sm border border-red-200 bg-white text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-[10px] border border-red-200 bg-white text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                         title="Hapus Produk"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 className="h-4.5 w-4.5" />
                       </button>
                     </td>
                   </tr>
@@ -226,71 +220,71 @@ export default function SellerProductsSection() {
       {/* MODAL FORM TAMBAH / EDIT PRODUK */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg rounded-sm bg-white p-6 shadow-lg">
-            <h3 className="text-sm font-bold uppercase tracking-tight text-neutral-900 mb-4">
+          <div className="w-full max-w-lg rounded-[10px] bg-white p-6 shadow-lg">
+            <h3 className="text-[16px] font-bold uppercase tracking-tight text-neutral-900 mb-4">
               {editingProduct ? "Edit Produk Toko" : "Tambah Produk Baru"}
             </h3>
 
             <form onSubmit={handleSubmitForm} className="space-y-4">
               <div>
-                <label className="block text-[11px] font-bold uppercase text-neutral-600 mb-1">Nama Produk</label>
+                <label className="block text-[14px] font-bold uppercase text-neutral-600 mb-1">Nama Produk</label>
                 <input
                   type="text"
                   required
                   value={formData.product_name}
                   onChange={(e) => setFormData({ ...formData, product_name: e.target.value })}
-                  className="w-full rounded-sm border border-stone-300 px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-maroon"
+                  className="w-full rounded-[10px] border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-maroon"
                   placeholder="Contoh: Kain Batik Tulis..."
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase text-neutral-600 mb-1">Harga (Rp)</label>
+                  <label className="block text-[14px] font-bold uppercase text-neutral-600 mb-1">Harga (Rp)</label>
                   <input
                     type="number"
                     required
                     min="0"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full rounded-sm border border-stone-300 px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-maroon"
+                    className="w-full rounded-[10px] border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-maroon"
                     placeholder="150000"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold uppercase text-neutral-600 mb-1">Stok</label>
+                  <label className="block text-[14px] font-bold uppercase text-neutral-600 mb-1">Stok</label>
                   <input
                     type="number"
                     required
                     min="0"
                     value={formData.stock}
                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                    className="w-full rounded-sm border border-stone-300 px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-maroon"
+                    className="w-full rounded-[10px] border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-maroon"
                     placeholder="25"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase text-neutral-600 mb-1">Kategori ID</label>
+                <label className="block text-[14px] font-bold uppercase text-neutral-600 mb-1">Kategori ID</label>
                 <input
                   type="number"
                   required
                   min="1"
                   value={formData.category_id}
                   onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                  className="w-full rounded-sm border border-stone-300 px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-maroon"
+                  className="w-full rounded-[10px] border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-maroon"
                   placeholder="1 (Fashion / Kerajinan / Kuliner)"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold uppercase text-neutral-600 mb-1">Deskripsi</label>
+                <label className="block text-[14px] font-bold uppercase text-neutral-600 mb-1">Deskripsi</label>
                 <textarea
                   rows={3}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full rounded-sm border border-stone-300 px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-maroon"
+                  className="w-full rounded-[10px] border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-maroon"
                   placeholder="Deskripsikan produkmu..."
                 />
               </div>
@@ -299,13 +293,13 @@ export default function SellerProductsSection() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-sm border border-stone-300 bg-white px-4 py-2 text-[10px] font-semibold uppercase text-neutral-700 hover:bg-stone-50 cursor-pointer"
+                  className="rounded-[10px] border border-stone-300 bg-white px-5 py-3 text-[14px] font-semibold uppercase text-neutral-700 hover:bg-stone-50 cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="rounded-sm bg-maroon-dark px-4 py-2 text-[10px] font-semibold uppercase text-white hover:bg-maroon cursor-pointer"
+                  className="rounded-[10px] bg-maroon-dark px-5 py-4 text-[14px] font-semibold uppercase text-white hover:bg-maroon cursor-pointer"
                 >
                   Simpan Produk
                 </button>

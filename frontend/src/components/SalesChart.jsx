@@ -18,26 +18,26 @@ export default function SalesChart({ title, subtitle, data = [], onDownload }) {
     .join(", ");
 
   return (
-    <section className="rounded-sm border border-stone-200 bg-white p-4 sm:p-5">
+    <section className="rounded-[10px] border border-stone-200 bg-white p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-sm font-bold text-neutral-900">{title}</h2>
-          <p className="mt-0.5 text-[11px] text-neutral-500">{subtitle}</p>
+          <h2 className="text-[16px] font-bold text-neutral-900">{title}</h2>
+          <p className="mt-0.5 text-[14px] text-neutral-500">{subtitle}</p>
         </div>
-        <ul className="flex items-center gap-3 text-[10px] text-neutral-600">
+        <ul className="flex items-center gap-3 text-[14px] text-neutral-600">
           <li className="flex items-center gap-1.5">
-            <span className="h-2 w-2 bg-maroon-dark" />
+            <span className="h-3 w-3 bg-maroon-dark" />
             Omzet periode ini
           </li>
           <li className="flex items-center gap-1.5">
-            <span className="h-2 w-2 bg-stone-300" />
+            <span className="h-3 w-3 bg-stone-300" />
             Periode sebelumnya
           </li>
         </ul>
       </div>
 
       {data.length === 0 ? (
-        <p className="py-16 text-center text-sm text-neutral-500">
+        <p className="py-16 text-center text-[16px] text-neutral-500">
           Belum ada data penjualan pada periode ini.
         </p>
       ) : (
@@ -52,7 +52,7 @@ export default function SalesChart({ title, subtitle, data = [], onDownload }) {
               className="flex min-w-0 flex-1 flex-col items-center"
             >
               {showValues && (
-                <p className="mb-1 max-w-full truncate text-[10px] font-semibold text-neutral-700">
+                <p className="mb-1 max-w-full truncate text-[16px] font-semibold text-neutral-700">
                   {shortRupiah(item.current)}
                 </p>
               )}
@@ -84,7 +84,7 @@ export default function SalesChart({ title, subtitle, data = [], onDownload }) {
                   title={`${item.label}: ${shortRupiah(item.current)}`}
                 />
               </div>
-              <p className="mt-2 max-w-full truncate text-[10px] text-neutral-500">
+              <p className="mt-2 max-w-full truncate text-[14px] text-neutral-500">
                 {item.label}
               </p>
             </div>
