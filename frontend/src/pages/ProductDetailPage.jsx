@@ -91,7 +91,7 @@ export default function ProductDetailPage() {
       <Shell>
         <Container className="py-10">
           <div className="grid gap-8 lg:grid-cols-2" aria-busy="true">
-            <div className="aspect-square animate-pulse rounded-sm bg-stone-100" />
+            <div className="aspect-square animate-pulse rounded-[10px] bg-stone-100" />
             <div className="space-y-4">
               <div className="h-8 w-3/4 animate-pulse rounded bg-stone-100" />
               <div className="h-24 animate-pulse rounded bg-stone-100" />
@@ -108,8 +108,8 @@ export default function ProductDetailPage() {
       <Shell>
         <Container className="py-24 text-center">
           <p className="text-lg font-semibold text-neutral-900">Produk tidak ditemukan</p>
-          <p className="mt-1 text-sm text-neutral-500">Produk ini mungkin sudah tidak tersedia.</p>
-          <Link to="/produk" className="mt-6 inline-block rounded-sm bg-maroon-dark px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wide text-white hover:bg-maroon">
+          <p className="mt-1 text-[16px] text-neutral-500">Produk ini mungkin sudah tidak tersedia.</p>
+          <Link to="/produk" className="mt-6 inline-block rounded-[10px] bg-maroon-dark px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wide text-white hover:bg-maroon">
             Kembali ke katalog
           </Link>
         </Container>
@@ -192,7 +192,7 @@ export default function ProductDetailPage() {
         <div className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
           {/* Galeri */}
           <div>
-            <div className="relative overflow-hidden rounded-sm bg-stone-100">
+            <div className="relative overflow-hidden rounded-[10px] bg-stone-100">
               {images[activeImg] ? (
                 <img src={images[activeImg]} alt={product.product_name} className="aspect-square w-full object-cover" />
               ) : (
@@ -218,7 +218,7 @@ export default function ProductDetailPage() {
                     onClick={() => setActiveImg(i)}
                     aria-label={`Lihat foto ${i + 1}`}
                     aria-current={i === activeImg}
-                    className={"overflow-hidden rounded-sm border-2 " + (i === activeImg ? "border-maroon" : "border-transparent hover:border-stone-300")}
+                    className={"overflow-hidden rounded-[10px] border-2 " + (i === activeImg ? "border-maroon" : "border-transparent hover:border-stone-300")}
                   >
                     <img src={src} alt="" loading="lazy" className="aspect-square w-full object-cover" />
                   </button>
@@ -229,9 +229,9 @@ export default function ProductDetailPage() {
 
           {/* Info produk */}
           <div className="min-w-0">
-            <h1 className="text-xl font-semibold leading-snug text-neutral-900 sm:text-2xl">{product.product_name}</h1>
+            <h1 className="text-xl font-semibold leading-snug text-neutral-900 sm:text-3xl">{product.product_name}</h1>
 
-            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-neutral-600">
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] text-neutral-600">
               {product.rating != null && (
                 <span>
                   <span className="text-amber-500">★</span> <strong className="text-neutral-900">{product.rating}</strong>
@@ -247,28 +247,28 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Penjual */}
-            <div className="mt-4 flex items-center justify-between gap-3 rounded-sm border border-stone-200 bg-stone-50 p-3">
+            <div className="mt-4 flex items-center justify-between gap-3 rounded-[10px] border border-stone-200 bg-stone-50 p-3">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-maroon-dark text-xs font-semibold text-white">{storeInitials}</span>
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-maroon-dark text-sm font-semibold text-white">{storeInitials}</span>
                 <div className="min-w-0">
-                  <p className="flex items-center gap-1 truncate text-sm fon/}t-semibold text-neutral-900">
+                  <p className="flex items-center gap-1 truncate text-[16px] fon/}t-semibold text-neutral-900">
                     {product.store_name ?? "UMKM Makassar"} <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-maroon" />
                   </p>
-                  <p className="text-[11px] text-neutral-500">Pengrajin lokal Makassar</p>
+                  <p className="text-[14px] text-neutral-500">Pengrajin lokal Makassar</p>
                 </div>
               </div>
-              <Link to={`/toko/${product.store_id ?? ""}`} className="shrink-0 rounded-sm border border-stone-300 bg-white px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-50">
+              <Link to={`/toko/${product.store_id ?? ""}`} className="shrink-0 rounded-[10px] border border-stone-300 bg-white px-3 py-1.5 text-[14px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-50">
                 Kunjungi Toko
               </Link>
             </div>
 
             {/* Harga */}
-            <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-sm border border-stone-200 bg-blush/50 px-4 py-3">
+            <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-[10px] border border-stone-200 bg-blush/50 px-4 py-3">
               <p className="text-2xl font-bold text-maroon sm:text-3xl">{formatRupiah(product.price)}</p>
               {discount > 0 && (
                 <>
                   <p className="text-xs text-neutral-400 line-through">{formatRupiah(original)}</p>
-                  <span className="rounded-sm bg-red-700 px-1.5 py-0.5 text-[10px] font-semibold text-white">-{discount}% OFF</span>
+                  <span className="rounded-[10px] bg-red-700 px-1.5 py-0.5 text-[10px] font-semibold text-white">-{discount}% OFF</span>
                 </>
               )}
             </div>
@@ -276,10 +276,10 @@ export default function ProductDetailPage() {
 
             {/* Jumlah */}
             <div className="mt-5">
-              <p className={optionTitle}>Jumlah pembelian</p>
+              <p className="text-sm font-semibold uppercase tracking-wide text-neutral-500">Jumlah pembelian</p>
               <div className="mt-2 flex items-center gap-3">
                 <QuantityStepper value={qty} onChange={setQty} max={maxQty} disabled={soldOut || busy} />
-                {hasStock && !soldOut && <span className="text-[11px] text-neutral-500">Sisa stok {product.stock} unit</span>}
+                {hasStock && !soldOut && <span className="text-[14px] text-neutral-500">Sisa stok {product.stock} unit</span>}
               </div>
             </div>
 
@@ -289,7 +289,7 @@ export default function ProductDetailPage() {
                 type="button"
                 onClick={add}
                 disabled={busy || soldOut}
-                className="inline-flex items-center justify-center gap-2 rounded-sm border-2 border-maroon-dark bg-white py-3 text-[11px] font-semibold uppercase tracking-wide text-maroon-dark transition-colors hover:bg-blush/60 disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 rounded-[10px] border-2 border-maroon-dark bg-white py-3 text-[14px] font-semibold uppercase tracking-wide text-maroon-dark transition-colors hover:bg-blush/60 disabled:opacity-50"
               >
                 <ShoppingCart className="h-4 w-4" /> {busy ? "Memproses..." : "Tambah ke Keranjang"}
               </button>
@@ -297,7 +297,7 @@ export default function ProductDetailPage() {
                 type="button"
                 onClick={buyNow}
                 disabled={busy || soldOut}
-                className="inline-flex items-center justify-center gap-2 rounded-sm bg-maroon-dark py-3 text-[11px] font-semibold uppercase tracking-wide text-white transition-colors hover:bg-maroon disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-maroon-dark py-3 text-[14px] font-semibold uppercase tracking-wide text-white transition-colors hover:bg-maroon disabled:opacity-50"
               >
                 <ShoppingBag className="h-4 w-4" /> Beli Sekarang
               </button>
@@ -306,7 +306,7 @@ export default function ProductDetailPage() {
             {status && (
               <p
                 role={status.type === "error" ? "alert" : "status"}
-                className={"mt-3 rounded-sm px-3 py-2 text-xs " + (status.type === "error" ? "bg-red-50 text-red-800" : "bg-green-50 text-green-800")}
+                className={"mt-3 rounded-sm px-3 py-2 text-sm " + (status.type === "error" ? "bg-red-50 text-red-800" : "bg-green-50 text-green-800")}
               >
                 {status.text}{" "}
                 {status.cta && (
@@ -322,11 +322,11 @@ export default function ProductDetailPage() {
         {/* Deskripsi */}
         <section className="mt-10 md:mt-12">
           <div className="border-b border-stone-200">
-            <h2 className="-mb-px inline-block border-b-2 border-maroon pb-3 text-[11px] font-semibold uppercase tracking-wide text-neutral-900">
+            <h2 className="-mb-px inline-block border-b-2 border-maroon pb-3 text-[18px] font-semibold uppercase tracking-wide text-neutral-900">
               Deskripsi Produk
             </h2>
           </div>
-          <div className="mt-5 max-w-3xl space-y-3 text-sm leading-relaxed text-neutral-700">
+          <div className="mt-5 max-w-3xl space-y-3 text-[16px] leading-relaxed text-neutral-700">
             {paragraphs.length > 0 ? paragraphs.map((p, i) => <p key={i}>{p}</p>) : <p className="text-neutral-400">Belum ada deskripsi untuk produk ini.</p>}
           </div>
         </section>
@@ -338,10 +338,10 @@ export default function ProductDetailPage() {
           <Container className="py-8 md:py-10">
             <div className="flex items-end justify-between gap-4">
               <div>
-                <h2 className="text-lg font-semibold text-neutral-900 sm:text-xl">Rekomendasi Lainnya</h2>
-                <p className="mt-0.5 text-xs text-neutral-500">Produk pilihan serupa dari pengrajin lokal Makassar.</p>
+                <h2 className="text-lg font-semibold text-neutral-900 sm:text-2xl">Rekomendasi Lainnya</h2>
+                <p className="mt-0.5 text-[16px] text-neutral-500">Produk pilihan serupa dari pengrajin lokal Makassar.</p>
               </div>
-              <Link to="/produk" className="inline-flex shrink-0 items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-maroon hover:underline">
+              <Link to="/produk" className="inline-flex shrink-0 items-center gap-1 text-[16px] font-semibold uppercase tracking-wide text-maroon hover:underline">
                 Lihat semua <ArrowRight className="h-3 w-3" />
               </Link>
             </div>

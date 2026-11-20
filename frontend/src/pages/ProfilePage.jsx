@@ -21,8 +21,8 @@ const phoneToDigits = (v) => {
 const fromUser = (u) => ({ name: u?.name ?? "", phone: phoneToDigits(u?.phone), email: u?.email ?? "" });
 
 const SectionTitle = ({ icon: Icon, children }) => (
-  <h2 className="flex items-center gap-2 text-sm font-semibold text-neutral-900">
-    <Icon className="h-4 w-4 text-maroon" /> {children}
+  <h2 className="flex items-center gap-2 text-[16px] font-semibold text-neutral-900">
+    <Icon className="h-5 w-5 text-maroon" /> {children}
   </h2>
 );
 
@@ -168,31 +168,31 @@ export default function ProfilePage() {
           <h1 className="sr-only">Profil Saya</h1>
 
           <div className="mx-auto max-w-3xl space-y-4">
-            <form onSubmit={onSubmit} className="rounded-sm bg-white p-5 shadow-sm sm:p-8">
+            <form onSubmit={onSubmit} className="rounded-[10px] bg-white p-5 shadow-sm sm:p-8">
               {/* Foto profil */}
               <div className="flex items-center gap-4 border-b border-stone-200 pb-6">
                 <div className="relative shrink-0">
                   {avatarSrc ? (
-                    <img src={avatarSrc} alt="Foto profil" className="h-[72px] w-[72px] rounded-md object-cover" />
+                    <img src={avatarSrc} alt="Foto profil" className="h-[75px] w-[75px] rounded-[10px] object-cover" />
                   ) : (
-                    <span className="grid h-[72px] w-[72px] place-items-center rounded-md bg-maroon-dark text-xl font-semibold text-white">
+                    <span className="grid h-[75px] w-[75px] place-items-center rounded-[10px] bg-maroon-dark text-xl font-semibold text-white">
                       {initials}
                     </span>
                   )}
-                  <span className="absolute -bottom-1 -right-1 grid h-5 w-5 place-items-center rounded bg-maroon text-white">
-                    <Camera className="h-3 w-3" />
+                  <span className="absolute -bottom-1 -right-1 grid h-6 w-6 place-items-center rounded bg-maroon text-white">
+                    <Camera className="h-4 w-4" />
                   </span>
                 </div>
 
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-neutral-900">{user?.name}</p>
-                  <p className="mt-0.5 text-[11px] text-neutral-500">Format gambar JPG atau PNG (Maksimal 2 MB).</p>
+                  <p className="truncate text-[16px] font-semibold text-neutral-900 uppercase">{user?.name}</p>
+                  <p className="mt-0.5 text-[14px] text-neutral-500">Format gambar JPG atau PNG (Maksimal 2 MB).</p>
                   <input ref={fileRef} type="file" accept="image/png,image/jpeg" className="hidden" onChange={onPickPhoto} />
                   <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
                     disabled={busy}
-                    className="mt-2 rounded-sm border border-stone-300 bg-white px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-50 disabled:opacity-60"
+                    className="mt-2 rounded-[10px] border border-stone-300 bg-white px-3 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-50 disabled:opacity-60"
                   >
                     Ganti foto
                   </button>
@@ -203,7 +203,7 @@ export default function ProfilePage() {
                 <p
                   role={status.type === "error" ? "alert" : "status"}
                   className={
-                    "mt-5 rounded-sm px-3 py-2 text-xs " +
+                    "mt-5 rounded-[10px] px-3 py-2 text-sm " +
                     (status.type === "error" ? "bg-red-50 text-red-800" : "bg-green-50 text-green-800")
                   }
                 >
@@ -225,7 +225,7 @@ export default function ProfilePage() {
                 <div className="space-y-4 border-b border-stone-200 py-6">
                   <div>
                     <SectionTitle icon={Lock}>Perbarui Kata Sandi</SectionTitle>
-                    <p className="mt-1 text-[11px] text-neutral-500">Kosongkan jika Anda tidak ingin mengubah kata sandi.</p>
+                    <p className="mt-1 text-[14px] text-neutral-500">Kosongkan jika Anda tidak ingin mengubah kata sandi.</p>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-3">
                     <FormField id="current" name="current" type="password" label="Kata Sandi Saat Ini" labelClass={labelCls} value={pw.current} onChange={onChangePw} autoComplete="current-password" />
@@ -240,14 +240,14 @@ export default function ProfilePage() {
                   type="button"
                   onClick={onCancel}
                   disabled={busy}
-                  className="rounded-sm bg-stone-100 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-200 disabled:opacity-60"
+                  className="rounded-[10px] bg-stone-100 px-5 py-2.5 text-[14px] font-semibold uppercase tracking-wide text-neutral-700 hover:bg-stone-200 disabled:opacity-60"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={busy}
-                  className="inline-flex items-center gap-2 rounded-sm bg-maroon-dark px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wide text-white transition-colors hover:bg-maroon disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-[10px] bg-maroon-dark px-5 py-2.5 text-[14px] font-semibold uppercase tracking-wide text-white transition-colors hover:bg-maroon disabled:opacity-60"
                 >
                   <Save className="h-3.5 w-3.5" /> {saving ? "Menyimpan..." : "Simpan perubahan"}
                 </button>

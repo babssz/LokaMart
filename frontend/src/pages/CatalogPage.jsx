@@ -254,7 +254,7 @@ export default function CatalogPage() {
                 </div>
               ) : visible.length === 0 ? (
                 <div className="mt-4 rounded-[10px] bg-white px-6 py-14 text-center">
-                  <p className="text-[18px] font-semibold text-neutral-900">Tidak ada produk yang cocok.</p>
+                  <p className="text-[14px] font-semibold text-neutral-900">Tidak ada produk yang cocok.</p>
                   <p className="mt-1 text-[16px] text-neutral-500">Coba ubah atau hapus sebagian filter.</p>
                   {chips.length > 0 && (
                     <button onClick={resetAll} className="mt-4 rounded-[10px] bg-maroon-dark px-4 py-2 text-[14px] font-semibold uppercase tracking-wide text-white hover:bg-maroon">

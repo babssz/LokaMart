@@ -74,12 +74,12 @@ export default function ProductSection({
   return (
     <section id="produk" ref={sectionRef} className={`scroll-mt-28 ${bg}`}>
       <Container className="py-8 md:py-10">
-        {eyebrow && <p className="text-[10px] font-semibold uppercase tracking-wide text-maroon">{eyebrow}</p>}
+        {eyebrow && <p className="text-[16px] font-semibold uppercase tracking-wide text-maroon">{eyebrow}</p>}
 
         <div className="mt-1 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h2 className="text-xl font-semibold uppercase tracking-tight text-neutral-900 sm:text-2xl">{title}</h2>
-            {subtitle && <p className="mt-1 text-xs text-neutral-600">{subtitle}</p>}
+            {subtitle && <p className="mt-1 text-sm text-neutral-600">{subtitle}</p>}
           </div>
 
           <div className="flex gap-2 overflow-x-auto pb-1 lg:pb-0" role="tablist" aria-label="Filter kategori">
@@ -93,7 +93,7 @@ export default function ProductSection({
                   setCurrentPage(1); // Reset halaman ke 1 saat ganti kategori manual
                 }}
                 className={
-                  "shrink-0 rounded px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide transition-colors " +
+                  "shrink-0 rounded-[10px] px-3 py-1.5 text-[12px] font-semibold uppercase tracking-wide transition-colors " +
                   (active === c ? "bg-neutral-900 text-white" : "bg-stone-100 text-neutral-700 hover:bg-stone-200")
                 }
               >
@@ -104,7 +104,7 @@ export default function ProductSection({
         </div>
 
         {keyword && (
-          <p className="mt-4 text-xs text-neutral-600">
+          <p className="mt-4 text-sm text-neutral-600">
             {shown.length} hasil untuk “{keyword}”
             <button onClick={() => setParams({})} className="ml-3 font-semibold text-maroon hover:underline">
               Hapus pencarian
@@ -130,7 +130,7 @@ export default function ProductSection({
             {/* Navigasi Pagination (Tombol Sebelumnya & Berikutnya) */}
             {totalPages > 1 && (
               <div className="mt-8 flex items-center justify-between border-t border-stone-200 pt-4">
-                <p className="text-xs text-neutral-600">
+                <p className="text-[16px] text-neutral-600">
                   Menampilkan <span className="font-semibold">{startIndex + 1}</span> - <span className="font-semibold">{Math.min(startIndex + itemsPerPage, shown.length)}</span> dari <span className="font-semibold">{shown.length}</span> produk
                 </p>
                 <div className="flex items-center gap-2">
@@ -140,11 +140,11 @@ export default function ProductSection({
                       sectionRef.current?.scrollIntoView({ behavior: "smooth" });
                     }}
                     disabled={currentPage === 1}
-                    className="rounded border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-[10px] border border-stone-300 bg-white px-3 py-1.5 text-[16px] font-semibold text-neutral-700 hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Sebelumnya
                   </button>
-                  <span className="text-xs font-medium text-neutral-700">
+                  <span className="text-[16px] font-medium text-neutral-700">
                     Hal. {currentPage} dari {totalPages}
                   </span>
                   <button
@@ -153,7 +153,7 @@ export default function ProductSection({
                       sectionRef.current?.scrollIntoView({ behavior: "smooth" });
                     }}
                     disabled={currentPage === totalPages}
-                    className="rounded border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-[10px] border border-stone-300 bg-white px-3 py-1.5 text-[16px] font-semibold text-neutral-700 hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Berikutnya
                   </button>
