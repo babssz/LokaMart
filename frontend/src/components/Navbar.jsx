@@ -248,7 +248,7 @@ export default function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari produk lokal..."
-                className="w-full rounded-sm border border-stone-200 bg-stone-50 py-2 pl-3 pr-9 text-[12px] text-neutral-800 placeholder-neutral-400 focus:border-maroon focus:bg-white focus:outline-none"
+                className="w-full rounded-[10px] border border-stone-200 bg-stone-50 py-2 pl-3 pr-9 text-[16px] text-neutral-800 placeholder-neutral-400 focus:border-maroon focus:bg-white focus:outline-none"
               />
               <button
                 type="submit"
@@ -264,7 +264,7 @@ export default function Navbar() {
               end
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) =>
-                "rounded-sm px-3 py-2 text-[11px] font-semibold uppercase tracking-wide " +
+                "rounded-sm px-3 py-2 text-[14px] font-semibold uppercase tracking-wide " +
                 (isActive ? "bg-stone-100 text-maroon" : "text-neutral-700 hover:bg-stone-50")
               }
             >
@@ -273,26 +273,26 @@ export default function Navbar() {
             <Link
               to="/produk?kategori=fashion"
               onClick={() => setMenuOpen(false)}
-              className={"rounded-sm px-3 py-2 " + (currentKategori === "fashion" ? "bg-stone-100 text-maroon font-semibold" : "text-neutral-700 hover:bg-stone-50 font-semibold text-[11px] uppercase tracking-wide")}
+              className={"rounded-sm px-3 py-2 " + (currentKategori === "fashion" ? "bg-stone-100 text-maroon font-semibold" : "text-neutral-700 hover:bg-stone-50 font-semibold text-[14px] uppercase tracking-wide")}
             >
               Fashion
             </Link>
             <Link
               to="/produk?kategori=kuliner"
               onClick={() => setMenuOpen(false)}
-              className={"rounded-sm px-3 py-2 " + (currentKategori === "kuliner" ? "bg-stone-100 text-maroon font-semibold" : "text-neutral-700 hover:bg-stone-50 font-semibold text-[11px] uppercase tracking-wide")}
+              className={"rounded-sm px-3 py-2 " + (currentKategori === "kuliner" ? "bg-stone-100 text-maroon font-semibold" : "text-neutral-700 hover:bg-stone-50 font-semibold text-[14px] uppercase tracking-wide")}
             >
               Kuliner
             </Link>
             <Link
               to="/produk?kategori=kerajinan"
               onClick={() => setMenuOpen(false)}
-              className={"rounded-sm px-3 py-2 " + (currentKategori === "kerajinan" ? "bg-stone-100 text-maroon font-semibold" : "text-neutral-700 hover:bg-stone-50 font-semibold text-[11px] uppercase tracking-wide")}
+              className={"rounded-sm px-3 py-2 " + (currentKategori === "kerajinan" ? "bg-stone-100 text-maroon font-semibold" : "text-neutral-700 hover:bg-stone-50 font-semibold text-[14px] uppercase tracking-wide")}
             >
               Kerajinan
             </Link>
 
-            {user && (
+            {/* {user && (
               <>
                 <div className="my-1 border-t border-stone-200" />
                 <NavLink
@@ -352,7 +352,7 @@ export default function Navbar() {
                   Daftar
                 </NavLink>
               </>
-            )}
+            )} */}
           </Container>
         </div>
       )}

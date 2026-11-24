@@ -53,42 +53,49 @@ export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [visible, setVisible] = useState(PAGE);
   const [busyId, setBusyId] = useState(null);
+  const [completingId, setCompletingId] = useState(null);
   const [notice, setNotice] = useState(
     location.state?.message ? { type: "ok", text: location.state.message } : null
   );
 
-  useEffect(() => {
-    let cancelled = false;
-    let requestPending = false;
-    const loadOrders = async (initial = false) => {
-      if (cancelled || requestPending) return;
-      requestPending = true;
-      if (initial) setState((s) => ({ ...s, loading: true, error: "" }));
-      try {
-        const { orders, isSample } = await fetchOrders();
-        if (!cancelled) setState({ orders, isSample, loading: false, error: "" });
-      } catch (err) {
-        if (!cancelled) {
-          setState({
-            orders: [],
-            isSample: false,
-            loading: false,
-            error: ordersErrorMessage(err),
-          });
-        }
-      } finally {
-        requestPending = false;
+  const loadOrders = async (initial = false, cancelledRef = { current: false }) => {
+    if (cancelledRef.current) return;
+    if (initial) setState((s) => ({ ...s, loading: true, error: "" }));
+    try {
+      const { orders, isSample } = await fetchOrders();
+      if (!cancelledRef.current) setState({ orders, isSample, loading: false, error: "" });
+    } catch (err) {
+      if (!cancelledRef.current) {
+        setState({
+          orders: [],
+          isSample: false,
+          loading: false,
+          error: ordersErrorMessage(err),
+        });
       }
-    };
-    const refreshOrders = () => loadOrders();
+    }
+  };
 
-    loadOrders(true);
+  useEffect(() => {
+    const cancelledRef = { current: false };
+    let requestPending = false;
+
+    const runLoad = async (initial = false) => {
+      if (cancelledRef.current || requestPending) return;
+      requestPending = true;
+      await loadOrders(initial, cancelledRef);
+      requestPending = false;
+    };
+
+    const refreshOrders = () => runLoad();
+
+    runLoad(true);
     const refreshInterval = window.setInterval(refreshOrders, 30000);
     window.addEventListener("focus", refreshOrders);
     document.addEventListener("visibilitychange", refreshOrders);
 
     return () => {
-      cancelled = true;
+      cancelledRef.current = true;
       window.clearInterval(refreshInterval);
       window.removeEventListener("focus", refreshOrders);
       document.removeEventListener("visibilitychange", refreshOrders);
@@ -111,6 +118,33 @@ export default function OrdersPage() {
 
   const countForTab = (tabId) =>
     state.orders.filter((o) => matchesStatusTab(o.status, tabId)).length;
+
+  const confirmReceived = async (order) => {
+    if (!order?.order_id) return;
+    setCompletingId(order.order_id);
+    setNotice(null);
+    try {
+      const { data: updated } = await api.patch(`/orders/${order.order_id}/complete`);
+      setState((prev) => ({
+        ...prev,
+        orders: prev.orders.map((o) =>
+          o.order_id === order.order_id ? { ...o, ...updated, status: updated?.status ?? "selesai" } : o
+        ),
+      }));
+      setNotice({
+        type: "ok",
+        text: `Pesanan ${orderNumber(order)} telah diterima. Status diperbarui menjadi Selesai.`,
+      });
+    } catch (err) {
+      const detail = err.response?.data?.detail;
+      setNotice({
+        type: "error",
+        text: typeof detail === "string" ? detail : "Gagal mengonfirmasi penerimaan pesanan. Coba lagi.",
+      });
+    } finally {
+      setCompletingId(null);
+    }
+  };
 
   const reorder = async (order) => {
     if (!order.items) return;
@@ -164,8 +198,8 @@ export default function OrdersPage() {
           <div className="mx-auto max-w-4xl">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-neutral-900">Riwayat Pesanan</h1>
-                <p className="mt-1 text-xs text-neutral-500">Daftar seluruh transaksi belanja anda</p>
+                <h1 className="text-3xl font-bold text-neutral-900">Riwayat Pesanan</h1>
+                <p className="mt-1 text-[16px] text-neutral-500">Daftar seluruh transaksi belanja anda</p>
               </div>
 
               <div className="relative w-full sm:w-72">
@@ -180,7 +214,7 @@ export default function OrdersPage() {
                     setVisible(PAGE);
                   }}
                   placeholder="Cari pesanan atau produk..."
-                  className="w-full rounded-sm border border-stone-200 bg-white py-2 pl-9 pr-3 text-xs text-neutral-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-maroon/30"
+                  className="w-full rounded-[10px] border border-stone-200 bg-white py-2 pl-9 pr-3 text-sm text-neutral-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-maroon/30"
                 />
               </div>
             </div>
@@ -189,7 +223,7 @@ export default function OrdersPage() {
             <div
               role="tablist"
               aria-label="Filter status pesanan"
-              className="mt-6 flex gap-1 overflow-x-auto border-b border-stone-200 bg-white px-2 pt-2 rounded-t-sm"
+              className="mt-6 flex gap-1 overflow-x-auto border-b border-stone-200 bg-white px-2 pt-2 rounded-t-[10px]"
             >
               {STATUS_TABS.map((tab) => {
                 const active = statusFilter === tab.id;
@@ -205,7 +239,7 @@ export default function OrdersPage() {
                       setVisible(PAGE);
                     }}
                     className={
-                      "relative flex shrink-0 items-center gap-1.5 border-b-2 px-3.5 py-2.5 text-xs font-semibold transition-colors " +
+                      "relative flex shrink-0 items-center gap-1.5 border-b-2 px-3.5 py-2.5 text-sm font-semibold transition-colors " +
                       (active
                         ? "border-maroon-dark text-maroon-dark"
                         : "border-transparent text-neutral-500 hover:text-neutral-900")
@@ -215,7 +249,7 @@ export default function OrdersPage() {
                     {!state.loading && (
                       <span
                         className={
-                          "rounded-sm px-1.5 py-0.5 text-[10px] " +
+                          "rounded-[8px] px-1.5 py-0.5 text-[12px] " +
                           (active ? "bg-blush text-maroon-dark" : "bg-stone-100 text-neutral-500")
                         }
                       >
@@ -230,7 +264,7 @@ export default function OrdersPage() {
             {notice && (
               <p
                 role={notice.type === "error" ? "alert" : "status"}
-                className={"mt-4 rounded-sm px-3 py-2 text-xs " + (notice.type === "error" ? "bg-red-50 text-red-800" : "bg-green-50 text-green-800")}
+                className={"mt-4 rounded-[10px] px-3 py-2 text-sm " + (notice.type === "error" ? "bg-red-50 text-red-800" : "bg-green-50 text-green-800")}
               >
                 {notice.text}{" "}
                 {notice.cta && (
@@ -242,7 +276,7 @@ export default function OrdersPage() {
             )}
 
             {state.error && (
-              <p role="alert" className="mt-4 rounded-sm bg-red-50 px-3 py-2 text-xs text-red-800">
+              <p role="alert" className="mt-4 rounded-[10px] bg-red-50 px-3 py-2 text-sm text-red-800">
                 {state.error}
               </p>
             )}
@@ -250,20 +284,20 @@ export default function OrdersPage() {
             {state.loading ? (
               <div className="mt-5 space-y-4" aria-busy="true">
                 {[0, 1, 2].map((i) => (
-                  <div key={i} className="h-44 animate-pulse rounded-sm bg-white" />
+                  <div key={i} className="h-44 animate-pulse rounded-[10px] bg-white" />
                 ))}
               </div>
             ) : state.orders.length === 0 && !state.error ? (
-              <div className="mt-5 rounded-sm bg-white px-6 py-16 text-center">
-                <p className="text-lg font-semibold text-neutral-900">Belum ada pesanan</p>
-                <p className="mt-1 text-sm text-neutral-500">Pesanan yang kamu buat akan muncul di sini setelah checkout.</p>
-                <Link to="/produk" className="mt-6 inline-block rounded-sm bg-maroon-dark px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wide text-white hover:bg-maroon">
+              <div className="mt-5 rounded-[10px] bg-white px-6 py-16 text-center">
+                <p className="text-xl font-semibold text-neutral-900">Belum ada pesanan</p>
+                <p className="mt-1 text-[16px] text-neutral-500">Pesanan yang kamu buat akan muncul di sini setelah checkout.</p>
+                <Link to="/produk" className="mt-6 inline-block rounded-[10px] bg-maroon-dark px-5 py-2.5 text-[14px] font-semibold uppercase tracking-wide text-white hover:bg-maroon">
                   Mulai belanja
                 </Link>
               </div>
             ) : filtered.length === 0 ? (
-              <div className="mt-5 rounded-sm bg-white px-6 py-12 text-center">
-                <p className="text-sm font-medium text-neutral-600">
+              <div className="mt-5 rounded-[10px] bg-white px-6 py-12 text-center">
+                <p className="text-[16px] font-medium text-neutral-600">
                   {q
                     ? `Tidak ada pesanan yang cocok dengan “${query}” pada filter ini.`
                     : `Belum ada pesanan dengan status ${STATUS_TABS.find((t) => t.id === statusFilter)?.label.toLowerCase() ?? "tersebut"}.`}
@@ -271,16 +305,41 @@ export default function OrdersPage() {
               </div>
             ) : (
               <div className="mt-5 space-y-4">
-                {shown.map((o) => (
-                  <OrderCard key={o.order_id} order={o} reordering={busyId === o.order_id} onReorder={reorder} onUnavailable={unavailable} />
-                ))}
+                {shown.map((o) => {
+                  const isShipped = String(o.status ?? "").trim().toLowerCase() === "dikirim";
+                  const isCompleting = completingId === o.order_id;
+                  return (
+                    <div key={o.order_id} className="rounded-[10px] bg-white shadow-sm">
+                      <OrderCard
+                        order={o}
+                        reordering={busyId === o.order_id}
+                        completing={isCompleting}
+                        onReorder={reorder}
+                        onConfirmReceived={confirmReceived}
+                        onUnavailable={unavailable}
+                      />
+                      {isShipped && (
+                        <div className="flex justify-end border-t border-stone-100 px-4 py-3">
+                          <button
+                            type="button"
+                            disabled={isCompleting}
+                            onClick={() => confirmReceived(o)}
+                            className="rounded-[10px] bg-maroon-dark px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-maroon disabled:opacity-60"
+                          >
+                            {isCompleting ? "Mengonfirmasi..." : "Terima Pesanan"}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
 
                 {filtered.length > shown.length && (
                   <div className="pt-2 text-center">
                     <button
                       type="button"
                       onClick={() => setVisible((v) => v + PAGE)}
-                      className="rounded-sm border border-stone-300 bg-white px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wide text-neutral-800 hover:bg-stone-50"
+                      className="rounded-[10px] border border-stone-300 bg-white px-5 py-2.5 text-[14px] font-semibold uppercase tracking-wide text-neutral-800 hover:bg-stone-50"
                     >
                       Tampilkan lebih banyak
                     </button>

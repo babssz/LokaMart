@@ -158,7 +158,7 @@ export default function SellerOrdersSection() {
                     )}
 
                     {order.status === "selesai" && (
-                      <span className="text-[12px] font-semibold text-emerald-600">Selesai</span>
+                      <span className="text-[12px] font-semibold text-emerald-600"></span>
                     )}
                   </div>
                 </div>

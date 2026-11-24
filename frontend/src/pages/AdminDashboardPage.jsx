@@ -347,7 +347,7 @@ export default function AdminDashboardPage() {
       <header className="sticky top-0 z-50 border-b border-stone-200 bg-white">
         <Container className="flex h-16 items-center justify-between">
           <Link to="/admin-dashboard" className="shrink-0 text-sm font-bold uppercase tracking-widest text-neutral-900">
-            <img src={logo} alt="Lokamart" className="h-8 w-auto" />
+            <img src={logo} alt="Lokamart" className="h-10 w-auto" />
           </Link>
 
           <div className="relative">
@@ -356,7 +356,7 @@ export default function AdminDashboardPage() {
               onClick={() => setProfileOpen((open) => !open)}
               aria-expanded={profileOpen}
               aria-haspopup="menu"
-              className="flex items-center gap-2 rounded-sm px-2 py-1 text-[11px] font-semibold text-neutral-800 hover:bg-stone-50 cursor-pointer"
+              className="flex items-center gap-2 rounded-sm px-2 py-1 text-[16px] font-semibold text-neutral-800 hover:bg-stone-50 cursor-pointer"
             >
               <span className="grid h-8 w-8 place-items-center rounded-full bg-maroon-dark text-[10px] font-bold text-white">
                 AD
@@ -370,14 +370,14 @@ export default function AdminDashboardPage() {
             {profileOpen && (
               <>
                 <button type="button" aria-label="Tutup menu profil" className="fixed inset-0 z-10 cursor-default" onClick={() => setProfileOpen(false)} />
-                <div role="menu" className="absolute right-0 z-20 mt-1.5 w-36 overflow-hidden rounded-sm border border-stone-200 bg-white shadow-md">
+                <div role="menu" className="absolute right-0 z-20 mt-1.5 w-36 overflow-hidden rounded-[10px] border border-stone-200 bg-white shadow-md">
                   <button
                     type="button"
                     role="menuitem"
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-2 px-4 py-2.5 text-[11px] font-semibold text-red-700 hover:bg-red-50 cursor-pointer"
+                    className="flex w-full items-center gap-2 px-4 py-2.5 text-[16px] font-semibold text-red-700 hover:bg-red-50 cursor-pointer"
                   >
-                    <LogOut className="h-3.5 w-3.5" />
+                    <LogOut className="h-4 w-4" />
                     Keluar
                   </button>
                 </div>
@@ -397,7 +397,7 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Navigation Tabs */}
-          <section className="mt-4 overflow-hidden rounded-sm border border-stone-200 bg-white">
+          <section className="mt-4 overflow-hidden rounded-[10px] border border-stone-200 bg-white">
             <div className="flex gap-1 overflow-x-auto bg-stone-50 px-2 sm:px-4 py-1">
               {ADMIN_TABS.map((t) => {
                 const isActive = activeTab === t.id;
@@ -406,7 +406,7 @@ export default function AdminDashboardPage() {
                     key={t.id}
                     onClick={() => setActiveTab(t.id)}
                     className={
-                      "shrink-0 border-b-2 px-3 py-3 text-[10px] font-semibold uppercase tracking-wide sm:px-4 cursor-pointer transition-colors " +
+                      "shrink-0 border-b-2 px-3 py-3 text-[14px] font-semibold uppercase tracking-wide sm:px-4 cursor-pointer transition-colors " +
                       (isActive ? "border-maroon-dark text-maroon-dark bg-white" : "border-transparent text-neutral-500 hover:text-neutral-900")
                     }
                   >
@@ -420,15 +420,15 @@ export default function AdminDashboardPage() {
           {/* TAB 1: LAPORAN PENJUALAN */}
           {activeTab === "laporan" && (
             <div className="mt-6 space-y-6">
-              {error && <p className="rounded-sm bg-red-50 p-3 text-xs text-red-800">{error}</p>}
+              {error && <p className="rounded-[10px] bg-red-50 p-3 text-sm text-red-800">{error}</p>}
 
-              <div className="inline-flex rounded-sm border border-stone-200 bg-white p-0.5">
+              <div className="inline-flex rounded-[10px] border border-stone-200 bg-white p-0.5">
                 {["harian", "mingguan", "bulanan", "tahunan"].map((p) => (
                   <button
                     key={p}
                     onClick={() => setPeriod(p)}
                     className={
-                      "rounded-sm px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide transition-colors sm:px-4 cursor-pointer " +
+                      "rounded-[10px] px-3 py-1.5 text-[14px] font-semibold uppercase tracking-wide transition-colors sm:px-4 cursor-pointer " +
                       (period === p ? "bg-neutral-900 text-white" : "text-neutral-600 hover:bg-stone-100")
                     }
                   >
@@ -438,7 +438,7 @@ export default function AdminDashboardPage() {
               </div>
               
               {loading ? (
-                <div className="py-12 text-center text-xs text-neutral-500">Memuat data real dari server...</div>
+                <div className="py-12 text-center text-sm text-neutral-500">Memuat data real dari server...</div>
               ) : (
                 adminData && (
                   <>
@@ -468,13 +468,13 @@ export default function AdminDashboardPage() {
                       }}
                     />
 
-                    <div className="overflow-hidden rounded-sm border border-stone-200 bg-white">
+                    <div className="overflow-hidden rounded-[10px] border border-stone-200 bg-white">
                       <div className="border-b border-stone-200 px-4 py-3">
-                        <h2 className="text-sm font-bold text-neutral-900">Performa Toko Penjual</h2>
+                        <h2 className="text-[16px] font-bold text-neutral-900">Performa Toko Penjual</h2>
                       </div>
                       <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs">
-                          <thead className="bg-stone-50 text-[10px] uppercase text-neutral-500">
+                        <table className="w-full text-left text-sm">
+                          <thead className="bg-stone-50 text-[14px] uppercase text-neutral-500">
                             <tr><th className="px-4 py-3">Toko</th><th className="px-4 py-3">Pesanan</th><th className="px-4 py-3">Omzet</th></tr>
                           </thead>
                           <tbody className="divide-y divide-stone-100">
@@ -500,9 +500,9 @@ export default function AdminDashboardPage() {
 
           {/* TAB 2: KELOLA PENGGUNA */}
           {activeTab === "pengguna" && (
-            <div className="mt-6 overflow-x-auto rounded-sm border border-stone-200 bg-white">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-stone-50 text-[10px] uppercase text-neutral-500">
+            <div className="mt-6 overflow-x-auto rounded-[10px] border border-stone-200 bg-white">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-stone-50 text-[14px] uppercase text-neutral-500">
                   <tr><th className="px-4 py-3">Nama</th><th className="px-4 py-3">Email</th><th className="px-4 py-3">Role</th><th className="px-4 py-3">Status</th></tr>
                 </thead>
                 <tbody className="divide-y divide-stone-100">
@@ -528,37 +528,37 @@ export default function AdminDashboardPage() {
               <div>
                 <button
                   onClick={handleAddCategory}
-                  className="flex items-center gap-2 rounded-sm bg-maroon px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white hover:bg-maroon-dark transition-colors cursor-pointer shadow-sm"
+                  className="flex items-center gap-2 rounded-[10px] bg-maroon px-4 py-2.5 text-sm font-semibold uppercase tracking-wide text-white hover:bg-maroon-dark transition-colors cursor-pointer shadow-sm"
                 >
-                  <FolderPlus className="h-4 w-4" />
+                  <FolderPlus className="h-5 w-5" />
                   + Tambah Kategori Baru
                 </button>
               </div>
 
               {categoryNotice && (
-                <p role="status" className="flex items-center gap-2 rounded-sm border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs text-emerald-800">
-                  <CheckCircle2 className="h-4 w-4 shrink-0" />
+                <p role="status" className="flex items-center gap-2 rounded-[10px] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                  <CheckCircle2 className="h-5 w-5 shrink-0" />
                   {categoryNotice}
                 </p>
               )}
               {categoryError && (
-                <p role="alert" className="rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800">
+                <p role="alert" className="rounded-[10px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
                   {categoryError}
                 </p>
               )}
 
               {showCategoryForm && (
-                <form onSubmit={handleSaveCategory} className="rounded-sm border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
+                <form onSubmit={handleSaveCategory} className="rounded-[10px] border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
                   <div className="flex items-start justify-between gap-4 border-b border-stone-100 pb-4">
                     <div className="flex items-center gap-3">
-                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-sm bg-blush text-maroon">
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[10px] bg-blush text-maroon">
                         {editingCategoryId === null ? <FolderPlus className="h-5 w-5" /> : <Pencil className="h-5 w-5" />}
                       </span>
                       <div>
-                        <h3 className="text-sm font-bold text-neutral-900">
+                        <h3 className="text-[16px] font-bold text-neutral-900">
                           {editingCategoryId === null ? "Tambah Kategori Baru" : "Edit Nama Kategori"}
                         </h3>
-                        <p className="mt-0.5 text-[11px] text-neutral-500">
+                        <p className="mt-0.5 text-[14px] text-neutral-500">
                           {editingCategoryId === null
                             ? "Kategori akan tersimpan dan langsung tampil di katalog."
                             : "Nama baru akan tersimpan dan langsung diperbarui di katalog."}
@@ -570,14 +570,14 @@ export default function AdminDashboardPage() {
                       onClick={handleCloseCategoryForm}
                       disabled={categorySaving}
                       aria-label="Tutup form kategori"
-                      className="rounded-sm p-1.5 text-neutral-400 transition-colors hover:bg-stone-100 hover:text-neutral-800 disabled:opacity-50"
+                      className="rounded-[10px] p-1.5 text-neutral-400 transition-colors hover:bg-stone-100 hover:text-neutral-800 disabled:opacity-50"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-5 w-5" />
                     </button>
                   </div>
 
                   <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                    <label className={`block text-[10px] font-semibold uppercase tracking-wide text-neutral-700 ${editingCategoryId !== null ? "sm:col-span-2" : ""}`}>
+                    <label className={`block text-[14px] font-semibold uppercase tracking-wide text-neutral-700 ${editingCategoryId !== null ? "sm:col-span-2" : ""}`}>
                       Nama Kategori *
                       <input
                         autoFocus
@@ -586,18 +586,18 @@ export default function AdminDashboardPage() {
                         value={categoryForm.category_name}
                         onChange={(e) => setCategoryForm((current) => ({ ...current, category_name: e.target.value }))}
                         placeholder="Contoh: Kerajinan Lokal"
-                        className="mt-1.5 w-full rounded-sm border border-stone-200 bg-stone-50 px-3 py-2.5 text-xs font-normal normal-case tracking-normal text-neutral-900 outline-none transition focus:border-maroon focus:bg-white focus:ring-2 focus:ring-maroon/10"
+                        className="mt-1.5 w-full rounded-[10px] border border-stone-200 bg-stone-50 px-3 py-2.5 text-sm font-normal normal-case tracking-normal text-neutral-900 outline-none transition focus:border-maroon focus:bg-white focus:ring-2 focus:ring-maroon/10"
                       />
                     </label>
                     {editingCategoryId === null && (
-                      <label className="block text-[10px] font-semibold uppercase tracking-wide text-neutral-700">
+                      <label className="block text-[14px] font-semibold uppercase tracking-wide text-neutral-700">
                         Deskripsi
                         <textarea
                           rows={2}
                           value={categoryForm.description}
                           onChange={(e) => setCategoryForm((current) => ({ ...current, description: e.target.value }))}
                           placeholder="Jelaskan jenis produk dalam kategori ini"
-                          className="mt-1.5 w-full resize-y rounded-sm border border-stone-200 bg-stone-50 px-3 py-2.5 text-xs font-normal normal-case tracking-normal text-neutral-900 outline-none transition focus:border-maroon focus:bg-white focus:ring-2 focus:ring-maroon/10"
+                          className="mt-1.5 w-full resize-y rounded-[10px] border border-stone-200 bg-stone-50 px-3 py-2.5 text-sm font-normal normal-case tracking-normal text-neutral-900 outline-none transition focus:border-maroon focus:bg-white focus:ring-2 focus:ring-maroon/10"
                         />
                       </label>
                     )}
@@ -608,14 +608,14 @@ export default function AdminDashboardPage() {
                       type="button"
                       onClick={handleCloseCategoryForm}
                       disabled={categorySaving}
-                      className="rounded-sm border border-stone-300 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-700 transition-colors hover:bg-stone-50 disabled:opacity-50"
+                      className="rounded-[10px] border border-stone-300 px-4 py-2.5 text-[14px] font-semibold uppercase tracking-wide text-neutral-700 transition-colors hover:bg-stone-50 disabled:opacity-50"
                     >
                       Batal
                     </button>
                     <button
                       type="submit"
                       disabled={categorySaving}
-                      className="rounded-sm bg-maroon px-4 py-2.5 text-[10px] font-semibold uppercase tracking-wide text-white transition-colors hover:bg-maroon-dark disabled:cursor-wait disabled:opacity-60"
+                      className="rounded-[10px] bg-maroon px-4 py-2.5 text-[14px] font-semibold uppercase tracking-wide text-white transition-colors hover:bg-maroon-dark disabled:cursor-wait disabled:opacity-60"
                     >
                       {categorySaving
                         ? "Menyimpan..."
@@ -629,7 +629,7 @@ export default function AdminDashboardPage() {
 
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {categories.map((item) => (
-                  <div key={item.category_id} className="flex flex-col justify-between rounded-sm border border-stone-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+                  <div key={item.category_id} className="flex flex-col justify-between rounded-[10px] border border-stone-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
                     <div>
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <div className="flex items-center gap-3">
@@ -637,18 +637,18 @@ export default function AdminDashboardPage() {
                             <Layers className="h-5 w-5" />
                           </div>
                           <div>
-                            <h3 className="text-xs font-bold uppercase tracking-wide text-neutral-900">{item.category_name}</h3>
+                            <h3 className="text-sm font-bold uppercase tracking-wide text-neutral-900">{item.category_name}</h3>
                           </div>
                         </div>
-                        <span className="inline-flex items-center rounded-sm bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                        <span className="inline-flex items-center rounded-[10px] bg-emerald-50 px-2 py-0.5 text-[14px] font-semibold text-emerald-700">
                           {item.status || "Ditampilkan"}
                         </span>
                       </div>
-                      <p className="text-[11px] text-neutral-500 mb-4 line-clamp-2">{item.description || "Perluas pengelompokan produk perajin khas daerah."}</p>
+                      <p className="text-[14px] text-neutral-500 mb-4 line-clamp-2">{item.description || "Perluas pengelompokan produk perajin khas daerah."}</p>
                     </div>
 
                     <div className="flex items-center justify-between border-t border-stone-100 pt-3 mt-2">
-                      <span className="text-[11px] font-bold text-neutral-700">{item.product_count ?? 0} Produk Terdaftar</span>
+                      <span className="text-[14px] font-bold text-neutral-700">{item.product_count ?? 0} Produk Terdaftar</span>
                       <div className="flex items-center gap-2 text-neutral-500">
                         <button onClick={() => handleEditCategory(item)} className="rounded p-1 hover:bg-stone-100 hover:text-neutral-900 transition-colors cursor-pointer" title="Edit" aria-label={`Edit nama kategori ${item.category_name}`}>
                           <Pencil className="h-3.5 w-3.5" />
@@ -663,13 +663,13 @@ export default function AdminDashboardPage() {
 
                 <button
                   onClick={handleAddCategory}
-                  className="flex flex-col items-center justify-center rounded-sm border-2 border-dashed border-stone-300 bg-stone-50/50 p-6 text-center hover:border-maroon/50 hover:bg-stone-50 transition-all cursor-pointer group min-h-[160px]"
+                  className="flex flex-col items-center justify-center rounded-[10px] border-2 border-dashed border-stone-300 bg-stone-50/50 p-6 text-center hover:border-maroon/50 hover:bg-stone-50 transition-all cursor-pointer group min-h-[160px]"
                 >
                   <div className="grid h-10 w-10 place-items-center rounded-full bg-stone-200 text-stone-600 group-hover:bg-maroon group-hover:text-white transition-colors mb-2">
                     <Plus className="h-5 w-5" />
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-wide text-neutral-800">Tambah Sub-Kategori</span>
-                  <span className="text-[10px] text-neutral-400 mt-0.5">Perluas pengelompokan produk perajin khas daerah.</span>
+                  <span className="text-sm font-bold uppercase tracking-wide text-neutral-800">Tambah Sub-Kategori</span>
+                  <span className="text-[13px] text-neutral-400 mt-0.5">Perluas pengelompokan produk perajin khas daerah.</span>
                 </button>
               </div>
             </div>
@@ -677,9 +677,9 @@ export default function AdminDashboardPage() {
 
           {/* TAB 4: KELOLA PRODUK */}
           {activeTab === "produk" && (
-            <div className="mt-6 overflow-x-auto rounded-sm border border-stone-200 bg-white">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-stone-50 text-[10px] uppercase text-neutral-500">
+            <div className="mt-6 overflow-x-auto rounded-[10px] border border-stone-200 bg-white">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-stone-50 text-[14px] uppercase text-neutral-500">
                   <tr><th className="px-4 py-3">Produk</th><th className="px-4 py-3">Toko</th><th className="px-4 py-3">Harga</th><th className="px-4 py-3">Stok</th><th className="px-4 py-3">Status</th></tr>
                 </thead>
                 <tbody className="divide-y divide-stone-100">

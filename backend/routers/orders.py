@@ -267,3 +267,24 @@ def update_order_status(
     order.status = data.status
     db.commit()
     return _to_out(order)
+
+# ---------- Pembeli: konfirmasi pesanan diterima ----------
+@router.patch("/{order_id}/complete", response_model=OrderOut)
+def complete_order(
+    order_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_role("pembeli")),
+):
+    order = db.scalar(select(Order).options(*_OPTIONS).where(Order.order_id == order_id))
+    if order is None or order.user_id != user.user_id:
+        raise HTTPException(status_code=404, detail="Pesanan tidak ditemukan")
+
+    if order.status != "dikirim":
+        raise HTTPException(
+            status_code=409,
+            detail=f"Pesanan berstatus '{order.status}', hanya pesanan yang sudah dikirim yang bisa dikonfirmasi diterima",
+        )
+
+    order.status = "selesai"
+    db.commit()
+    return _to_out(order)

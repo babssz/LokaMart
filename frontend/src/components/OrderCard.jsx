@@ -39,14 +39,14 @@ export default function OrderCard({ order, reordering, onReorder, onUnavailable 
     <article className="overflow-hidden rounded-sm border border-stone-200 bg-white">
       {/* Kepala: nomor, tanggal, toko, status */}
       <header className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-200 bg-stone-50 px-4 py-3">
-        <p className="min-w-0 text-[11px] text-neutral-500">
+        <p className="min-w-0 text-[14px] text-neutral-500">
           <span className="font-semibold text-neutral-900">{orderNumber(order)}</span>
           <span className="mx-1.5">·</span>
           {formatDate(order.order_date)}
           <span className="mx-1.5">·</span>
           <span className="break-words">{storeLabel(order.items)}</span>
         </p>
-        <span className={`shrink-0 rounded-sm px-2 py-0.5 text-[10px] font-semibold ${status.tone}`}>{status.label}</span>
+        <span className={`shrink-0 rounded-[10px] px-2 py-0.5 text-[12px] font-semibold ${status.tone}`}>{status.label}</span>
       </header>
 
       {/* Produk */}
@@ -54,9 +54,9 @@ export default function OrderCard({ order, reordering, onReorder, onUnavailable 
         {order.items.map((it, i) => (
           <li key={`${it.product_id}-${i}`} className="flex items-center gap-3 py-3">
             {it.image ? (
-              <img src={it.image} alt="" loading="lazy" className="h-12 w-12 shrink-0 rounded-sm object-cover" />
+              <img src={it.image} alt="" loading="lazy" className="h-14 w-14 shrink-0 rounded-[10px] object-cover" />
             ) : (
-              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-sm bg-stone-100 text-[9px] text-neutral-400">Foto</div>
+              <div className="grid h-14 w-14 shrink-0 place-items-center rounded-[10px] bg-stone-100 text-[12px] text-neutral-400">Foto</div>
             )}
             <div className="min-w-0 flex-1">
               <p className="line-clamp-2 text-xs font-semibold text-neutral-900">{it.product_name}</p>
